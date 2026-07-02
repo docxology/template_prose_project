@@ -5,7 +5,7 @@
 Prose-focused exemplar demonstrating end-to-end use of
 `infrastructure/prose/` and `infrastructure/reference/`. Standalone editorial
 workflow — fast and offline by default. Exemplar roster:
-[`projects/AGENTS.md`](../../AGENTS.md#permanent-canonical-exemplars-and-optional-search-add-on).
+[`projects/AGENTS.md`](../../AGENTS.md#permanent-canonical-exemplars).
 
 Decision memory and verifier hardening follow [`docs/rules/memory_and_decision_records.md`](../../../docs/rules/memory_and_decision_records.md): use nearby `WHY:` comments only for surprising local choices, keep volatile counts generated, and add negative controls for verifier-like gates.
 
@@ -118,7 +118,7 @@ To target a different manuscript:
 ## See also
 
 * [`README.md`](README.md) — quick reference.
-* [Publishing guide](../../../docs/guides/publishing-guide.md) · [Zenodo DOI strategy](../../../docs/guides/zenodo-doi-strategy.md)
+* [Publishing guide](../../../docs/guides/publishing-guide.md) · [Publishing module reference](../../../infrastructure/publishing/README.md) · [Zenodo DOI strategy](../../../docs/guides/zenodo-doi-strategy.md) · [Archival targets](../../../docs/maintenance/archival-targets.md)
 * [`docs/architecture.md`](docs/architecture.md) — module dependency graph.
 * [`docs/quickstart.md`](docs/quickstart.md) — getting started.
 * [`infrastructure/prose/AGENTS.md`](../../../infrastructure/prose/AGENTS.md) —
