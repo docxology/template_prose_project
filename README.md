@@ -27,7 +27,7 @@ hand-edit between the markers; update the config and regenerate (see the legend)
 
 Concept DOI: [10.5281/zenodo.20417104](https://doi.org/10.5281/zenodo.20417104) | Version DOI: [10.5281/zenodo.20932047](https://zenodo.org/records/20932047) | Repository: —
 
-Publishing surface — 12 platforms, 9 published:
+Publishing surface — 20 platforms, 9 published:
 
 | Platform | Tier | Status | Reference | Credentials |
 | --- | --- | --- | --- | --- |
@@ -43,10 +43,18 @@ Publishing surface — 12 platforms, 9 published:
 | netlify | first-class | ✅ published | [https://6a44425bbd23b314b04b0154--tranquil-kleicha-0c9203.netlify.app](https://6a44425bbd23b314b04b0154--tranquil-kleicha-0c9203.netlify.app) | `NETLIFY_AUTH_TOKEN` |
 | huggingface_hub | first-class | ✅ published | [https://huggingface.co/datasets/ActiveInference/template_prose_project](https://huggingface.co/datasets/ActiveInference/template_prose_project) | `HUGGINGFACE_TOKEN`, `HF_TOKEN` |
 | osf | first-class | ✅ published | [https://osf.io/sh2r3/](https://osf.io/sh2r3/) | `OSF_TOKEN` |
+| amazon_kdp | documented | 🟡 planned | — | `AMAZON_KDP_EMAIL`, `AMAZON_KDP_PASSWORD` |
+| google_play_books | documented | 🟡 planned | — | `GOOGLE_PLAY_BOOKS_SERVICE_ACCOUNT_JSON` |
+| gumroad | documented | 🟡 planned | — | `GUMROAD_ACCESS_TOKEN` |
+| leanpub | documented | 🟡 planned | — | `LEANPUB_API_KEY` |
+| lulu | documented | 🟡 planned | — | `LULU_CLIENT_KEY`, `LULU_CLIENT_SECRET` |
+| draft2digital | documented | 🟡 planned | — | `DRAFT2DIGITAL_API_TOKEN` |
+| stripe | documented | 🟡 planned | — | `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY` |
+| ingramspark | documented | 🟡 planned | — | `INGRAMSPARK_CLIENT_ID`, `INGRAMSPARK_CLIENT_SECRET` |
 
 _Keywords: prose analysis, readability, editorial review, reproducible research, manuscript quality._
 
-_Status legend: ✅ published (durable identifier recorded in `config.yaml`) · ⚪ available (adapter implemented and locally verifiable) · 🟡 planned. This block is generated — edit `manuscript/config.yaml`, then regenerate with `uv run python -m infrastructure.publishing.status_report --project <path> --write`._
+_Status legend: ✅ published (durable identifier recorded in `config.yaml`) · 🔵 reserved (identifier reserved but not yet registered by final publication) · ⚪ available (adapter implemented and locally verifiable) · 🟡 planned. This block is generated — edit `manuscript/config.yaml`, then regenerate with `uv run python -m infrastructure.publishing.status_report --project <path> --write`._
 <!-- PUBLISHING-STATUS:END -->
 
 The 3 platforms still shown ⚪ available are not automatable to "published" with
@@ -67,8 +75,8 @@ git clone https://github.com/docxology/template
 cd template
 uv sync
 ./run.sh --project templates/template_prose_project --pipeline --core-only
-uv run python scripts/04_validate_output.py --project templates/template_prose_project
-uv run python scripts/05_copy_outputs.py --project templates/template_prose_project
+uv run python scripts/pipeline/stage_04_validate.py --project templates/template_prose_project
+uv run python scripts/pipeline/stage_05_copy.py --project templates/template_prose_project
 ```
 
 Standalone repositories are publication mirrors for source, DOI metadata, and
@@ -96,10 +104,12 @@ flowchart LR
     CFG[manuscript/config.yaml] --> READ[src/pipeline/ · read manuscript]
     READ --> PROSE[infrastructure.prose<br/>metrics · structure · quality]
     READ --> BIB[infrastructure.reference<br/>BibTeX validation]
+    PF[src/prose_facade.py<br/>parse_bib_keys · render_outline] --> CHECKS
     PROSE --> CHECKS[evaluate threshold checks]
     BIB --> CHECKS
     CHECKS --> JSON[manuscript_report.json<br/>checks.json]
     CHECKS --> RPT[src/report.py<br/>review_report.md]
+    PF --> RPT
     PROSE --> FIG[src/figures.py<br/>word counts · readability ·<br/>citation density PNGs]
     JSON --> MV[src/manuscript_variables.py<br/>variable token substitution]
     MV --> SUB[output/manuscript/*.md<br/>tokens resolved]
@@ -108,7 +118,7 @@ flowchart LR
     classDef proc fill:#1e3a8a,stroke:#0f172a,color:#fff
     classDef out fill:#7c2d12,stroke:#0f172a,color:#fff
     class CFG io
-    class READ,PROSE,BIB,CHECKS,MV proc
+    class READ,PROSE,BIB,CHECKS,MV,PF proc
     class JSON,RPT,FIG,SUB out
 ```
 
@@ -163,7 +173,7 @@ uv run pytest projects/templates/template_prose_project/tests/ \
 Full end-to-end (tests → analysis → render → validate → copy):
 
 ```bash
-uv run python scripts/execute_pipeline.py --project template_prose_project --core-only
+uv run python scripts/runner/execute_pipeline.py --project template_prose_project --core-only
 ```
 
 ## Configuration
@@ -180,6 +190,10 @@ Every knob lives in `manuscript/config.yaml`:
 | `bibliography` | `references_path` | `manuscript/references.bib` | Path to BibTeX file. |
 | `bibliography` | `fail_on_missing` | `true` | Fail if a cited `[@key]` is not in the bib. |
 | `bibliography` | `fail_on_unused` | `false` | Fail if a bib entry is never cited. |
+| `report` | `output_path` | `output/review_report.md` | Where `write_review_report` writes the markdown review. |
+| `report` | `include_per_file_table` | `true` | Include the per-file words/sentences/FRE/FKGL/Fog table. |
+| `report` | `include_outline` | `true` | Include the per-file heading outline section. |
+| `report` | `include_quality_flags` | `true` | Include the long-sentence/passive/hedge quality-flags section. |
 
 ## Agentic research overlays
 
@@ -205,6 +219,7 @@ experiments, mutate prompts, or run autonomous review agents.
 * `src/figures.py` — matplotlib renderers (no business logic).
 * `src/manuscript_variables.py` — abstract substitution variables.
 * `src/report.py` — markdown review-report assembly.
+* `src/prose_facade.py` — project-owned report Protocols (`ManuscriptReportLike`, `FileReportLike`, …) plus `render_outline` and `parse_bib_keys`; decouples `src/` from `infrastructure.prose`/`infrastructure.reference` internals.
 * `scripts/run_prose_pipeline.py` — thin orchestrator.
 * `scripts/y_generate_prose_figures.py` — figure stage.
 * `scripts/z_generate_manuscript_variables.py` — variable-hydration stage.
@@ -234,7 +249,7 @@ of the orchestrator scripts.
 - Forward backlog: [`TODO.md`](TODO.md).
 - Copy-and-customize config: [`manuscript/config.yaml.example`](manuscript/config.yaml.example).
 - Project validation: `uv run pytest projects/templates/template_prose_project/tests/ --cov=projects/templates/template_prose_project/src --cov-fail-under=90`.
-- Repo drift validation: `uv run python scripts/check_template_drift.py --strict`.
+- Repo drift validation: `uv run python scripts/audit/check_template_drift.py --strict`.
 
 <!-- foam-orphan-nav:start (auto-managed: links sub-docs so they are reachable) -->
 

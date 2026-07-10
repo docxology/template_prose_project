@@ -109,12 +109,12 @@ to a non-empty string before Phase 3. Unresolved tokens render literally.
 
 ### Phase 3 — Render PDF
 
-**Script**: `scripts/03_render_pdf.py` (at repository root, **not** inside
+**Script**: `scripts/pipeline/stage_03_render.py` (at repository root, **not** inside
 `projects/`).
 
 **Command**:
 ```bash
-uv run python scripts/03_render_pdf.py --project template_prose_project
+uv run python scripts/pipeline/stage_03_render.py --project template_prose_project
 ```
 
 **Inputs**: `output/manuscript/*.md` (substituted) + `manuscript/config.yaml`
@@ -140,11 +140,11 @@ uv run python scripts/03_render_pdf.py --project template_prose_project
 
 ### Phase 4 — Copy Final Deliverables
 
-**Script**: `scripts/05_copy_outputs.py` (at repository root).
+**Script**: `scripts/pipeline/stage_05_copy.py` (at repository root).
 
 **Command**:
 ```bash
-uv run python scripts/05_copy_outputs.py --project template_prose_project
+uv run python scripts/pipeline/stage_05_copy.py --project template_prose_project
 ```
 
 **Output**: Final PDF and figures copied to
@@ -168,6 +168,10 @@ Every knob lives in `projects/templates/template_prose_project/manuscript/config
 | `bibliography.references_path` | Path to BibTeX file | `parse_bibfile` in `src/pipeline/checks.py` |
 | `bibliography.fail_on_missing` | Fail if a `[@key]` is not in the bib | `_check_bibliography` in `src/pipeline/checks.py` |
 | `bibliography.fail_on_unused` | Fail if a bib entry is never cited | `_check_bibliography` in `src/pipeline/checks.py` |
+| `report.output_path` | Where the markdown review report is written | `write_review_report` in `src/report.py` |
+| `report.include_per_file_table` | Toggle the per-file words/sentences/FRE/FKGL/Fog table | `write_review_report` in `src/report.py` |
+| `report.include_outline` | Toggle the per-file heading outline section | `write_review_report` in `src/report.py` (via `render_outline` in `src/prose_facade.py`) |
+| `report.include_quality_flags` | Toggle the long-sentence/passive/hedge quality-flags section | `write_review_report` in `src/report.py` |
 
 ## Troubleshooting
 

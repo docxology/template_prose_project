@@ -42,10 +42,11 @@ disposability of `output/`.
 **Architecture isolation.** The `src/` boundary is fine-grained for this
 project. `src/pipeline/` is the **only** module that performs
 infrastructure operations (`analyze_manuscript`, `parse_bibfile`,
-`write_report`); other `src/` modules may import infrastructure *types*
-(`ManuscriptReport`, `render_outline`) but not call analysis or I/O
-functions. See [`style_guide.md`](style_guide.md) Rule 2 for the full
-delegation table.
+`write_report`); other `src/` modules may import the infrastructure *type*
+`ManuscriptReport` but not call analysis or I/O functions. `render_outline`
+is project-owned in `src/prose_facade.py` (zero infrastructure imports),
+not an infrastructure type. See [`style_guide.md`](style_guide.md) Rule 2
+for the full delegation table.
 
 **Zero-mock enforcement.** No `unittest.mock`, `MagicMock`, `@patch`, or
 `create_autospec` anywhere in `tests/`. Tests use real Markdown, real
@@ -105,6 +106,7 @@ grep -nE "analyze_manuscript|parse_bibfile|write_report" \
     projects/templates/template_prose_project/src/report.py \
     projects/templates/template_prose_project/src/manuscript_variables.py \
     projects/templates/template_prose_project/src/config.py \
+    projects/templates/template_prose_project/src/prose_facade.py \
     || echo "Clean"
 ```
 
@@ -123,6 +125,7 @@ viable project.
 | `src/figures.py` | REQUIRED | `tests/test_figures.py` |
 | `src/manuscript_variables.py` | REQUIRED | `tests/test_manuscript_variables.py` + the live `{{TOKEN}}` cross-reference test |
 | `src/report.py` | REQUIRED | `tests/test_report.py` |
+| `src/prose_facade.py` | REQUIRED | `tests/test_prose_facade.py`; drives `bibliography_consistency` (`parse_bib_keys`) and the report outline section (`render_outline`) |
 | `tests/` (all `test_*.py`) | REQUIRED | 90% coverage gate (per-project and root pipeline) |
 | `tests/conftest.py` | REQUIRED | Pinning `MPLBACKEND=Agg` is load-bearing for CI |
 | `scripts/run_prose_pipeline.py` | REQUIRED | `tests/test_scripts.py` exercises via subprocess |
@@ -137,7 +140,7 @@ viable project.
 | `manuscript/config.yaml.example` | AESTHETIC | Documentation; forkers copy → `config.yaml` |
 | `manuscript/AGENTS.md` | AESTHETIC | Agent guide; pipeline never reads it (and the substitution pass deliberately skips it) |
 | `docs/*.md` | AESTHETIC | Agent + human documentation; no gate parses these |
-| `docs/style_guide.md`, `docs/agent_instructions.md`, etc. | AESTHETIC (load-bearing for *agents*, not pipelines) | Drift detected only by audits; aspire to convert to a gate (see TIER L proposal `scripts/check_template_drift.py`) |
+| `docs/style_guide.md`, `docs/agent_instructions.md`, etc. | AESTHETIC (load-bearing for *agents*, not pipelines) | Drift detected only by audits; aspire to convert to a gate (see TIER L proposal `scripts/audit/check_template_drift.py`) |
 | `src/STYLE.md`, `tests/PATTERNS.md`, `scripts/CONVENTIONS.md` | AESTHETIC | Sibling-parity files; no automated enforcement |
 | `src/AGENTS.md`, `tests/AGENTS.md`, `scripts/AGENTS.md` | AESTHETIC | Per-subdir agent guides |
 | `pyproject.toml` | REQUIRED | Coverage gate config, pytest options, dependency declarations |

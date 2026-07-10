@@ -22,8 +22,10 @@ The thin-orchestrator pattern still applies, just at a different level:
 - `src/pipeline/` is the single point of contact with infrastructure
   operations.
 - `src/figures.py`, `src/report.py`, `src/manuscript_variables.py`,
-  `src/config.py` are pure: matplotlib + stdlib only, plus type-only
-  imports of `ManuscriptReport` and the pure `render_outline` helper.
+  `src/config.py`, `src/prose_facade.py` are pure: matplotlib + stdlib
+  only, plus type-only imports of `ManuscriptReport`. `render_outline` is
+  project-owned in `src/prose_facade.py` itself (zero infrastructure
+  imports), not an infrastructure import.
 
 See [`agent_instructions.md`](agent_instructions.md) Rule 3 and
 [`style_guide.md`](style_guide.md) Rule 2 for the full delegation table.
@@ -150,7 +152,7 @@ Promoted copy (used by CI for artifact upload):
 output/template_prose_project/template_prose_project_combined.pdf
 ```
 
-The promotion step is `scripts/05_copy_outputs.py --project template_prose_project`.
+The promotion step is `scripts/pipeline/stage_05_copy.py --project template_prose_project`.
 
 ## Common pitfalls
 
