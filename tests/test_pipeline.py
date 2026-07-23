@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from infrastructure.prose import analyze_files
@@ -47,34 +48,42 @@ class TestRunProsePipeline:
     def test_passing_run(self, tmp_path: Path):
         files = {
             "00_abstract.md": (
-                "# Abstract\n\n"
-                "This paper [@k1] examines reproducibility carefully. "
-                "We argue findings are important.\n"
+                "# Abstract\n\nThis paper [@k1] examines reproducibility carefully. We argue findings are important.\n"
             ),
-            "01_intro.md": (
-                "# Introduction\n\nThe field has grown rapidly [@k2].\n"
-            ),
+            "01_intro.md": ("# Introduction\n\nThe field has grown rapidly [@k2].\n"),
         }
         bib = "@article{k1, title={A}, year={2020}, author={X}}\n@article{k2, title={B}, year={2021}, author={Y}}\n"
         root = _make_project(tmp_path, files=files, bib=bib)
 
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
         assert artifacts.all_passed is True
         assert artifacts.total_words > 0
         assert (root / "output" / "manuscript_report.json").exists()
         assert (root / "output" / "checks.json").exists()
+        summary_path = root / "output" / "evidence_summary.json"
+        assert summary_path.exists()
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        assert summary["schema_version"] == "template-prose/evidence-summary/1"
+        assert summary["diagnostic_only"] is True
+        assert set(summary["metrics"]) == {"readability", "citations", "bibliography", "structure", "quality_flags"}
 
     def test_grade_level_out_of_band_fails(self, tmp_path: Path):
         files = {"00_abstract.md": "# Abstract\n\nShort plain text.\n"}
         bib = ""
         root = _make_project(tmp_path, files=files, bib=bib)
         config = _config(
-            prose={"target_grade_level_min": 50.0, "target_grade_level_max": 60.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": 50.0,
+                "target_grade_level_max": 60.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -87,8 +96,11 @@ class TestRunProsePipeline:
         bib = ""
         root = _make_project(tmp_path, files=files, bib=bib)
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 5.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 5.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -102,9 +114,12 @@ class TestRunProsePipeline:
         bib = ""
         root = _make_project(tmp_path, files=files, bib=bib)
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0,
-                   "forbid_skipped_levels": True},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+                "forbid_skipped_levels": True,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -115,10 +130,13 @@ class TestRunProsePipeline:
         files = {"00_abstract.md": "## Only Subheading\n\nbody body."}
         root = _make_project(tmp_path, files=files, bib="")
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0,
-                   "require_h1_per_section": True,
-                   "forbid_skipped_levels": False},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+                "require_h1_per_section": True,
+                "forbid_skipped_levels": False,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -132,8 +150,11 @@ class TestRunProsePipeline:
         bib = "@article{otherkey, title={X}, year={2020}, author={Z}}\n"
         root = _make_project(tmp_path, files=files, bib=bib)
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": True},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -146,8 +167,11 @@ class TestRunProsePipeline:
         bib = "@article{unused, title={X}, year={2020}, author={Z}}\n"
         root = _make_project(tmp_path, files=files, bib=bib)
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": True, "fail_on_unused": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -164,8 +188,11 @@ class TestRunProsePipeline:
         for name, body in files.items():
             (root / "manuscript" / name).write_text(body, encoding="utf-8")
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -176,12 +203,16 @@ class TestRunProsePipeline:
     def test_no_write_outputs(self, tmp_path: Path):
         root = _make_project(tmp_path, files={"00_a.md": "# A\n\nbody"}, bib="")
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root, write_outputs=False)
         assert artifacts.report_path is None
+        assert artifacts.evidence_summary_path is None
         assert not (root / "output").exists()
 
     def test_unused_bib_fails_when_strict(self, tmp_path: Path):
@@ -193,8 +224,11 @@ class TestRunProsePipeline:
         )
         root = _make_project(tmp_path, files=files, bib=bib)
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": False, "fail_on_unused": True},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -213,8 +247,11 @@ class TestRunProsePipeline:
             (root / "manuscript" / name).write_text(body, encoding="utf-8")
         # Note: no references.bib written.
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": True},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -230,10 +267,13 @@ class TestOptionalChecks:
         files = {"00_a.md": "## Subheading-only\n\nbody."}
         root = _make_project(tmp_path, files=files, bib="")
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0,
-                   "require_h1_per_section": False,
-                   "forbid_skipped_levels": False},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+                "require_h1_per_section": False,
+                "forbid_skipped_levels": False,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root, write_outputs=False)
@@ -245,10 +285,13 @@ class TestOptionalChecks:
         files = {"00_a.md": "# A\n\nbody.\n\n#### Skipped"}
         root = _make_project(tmp_path, files=files, bib="")
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0,
-                   "require_h1_per_section": True,
-                   "forbid_skipped_levels": False},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+                "require_h1_per_section": True,
+                "forbid_skipped_levels": False,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root, write_outputs=False)
@@ -371,14 +414,14 @@ class TestCitationExtractionViaPipeline:
 
     def _run(self, tmp_path: Path, prose_body: str, bib_keys: list[str]):
         files = {"00_a.md": "# A\n\n" + prose_body}
-        bib = "\n".join(
-            f"@article{{{k}, title={{T}}, year={{2020}}, author={{Z}}}}"
-            for k in bib_keys
-        )
+        bib = "\n".join(f"@article{{{k}, title={{T}}, year={{2020}}, author={{Z}}}}" for k in bib_keys)
         root = _make_project(tmp_path, files=files, bib=bib)
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": True, "fail_on_unused": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -431,8 +474,11 @@ class TestProseRunArtifacts:
             bib="",
         )
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root)
@@ -468,9 +514,12 @@ class TestLongSentenceThresholdWired:
         root = _make_project(tmp_path, files=files, bib="")
         # Threshold below the sentence's word count → flagged.
         cfg_low = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0,
-                   "long_sentence_threshold": 5},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+                "long_sentence_threshold": 5,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts_low = run_prose_pipeline_with_analysis(cfg_low, project_root=root, write_outputs=False)
@@ -478,9 +527,12 @@ class TestLongSentenceThresholdWired:
 
         # Threshold well above the sentence's word count → not flagged.
         cfg_high = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0,
-                   "long_sentence_threshold": 200},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+                "long_sentence_threshold": 200,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts_high = run_prose_pipeline_with_analysis(cfg_high, project_root=root, write_outputs=False)
@@ -504,8 +556,11 @@ class TestNegativeControls:
         files = {"00_abstract.md": "# A\\n\\n" + "word " * 200}
         root = _make_project(tmp_path, files=files, bib="")
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 50.0},  # impossibly high floor
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 50.0,
+            },  # impossibly high floor
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root, write_outputs=False)
@@ -516,8 +571,11 @@ class TestNegativeControls:
         files = {"00_abstract.md": "# A\\n\\n" + "word " * 200}
         root = _make_project(tmp_path, files=files, bib="")
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 50.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 50.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root, write_outputs=False)
@@ -531,13 +589,16 @@ class TestNegativeControls:
         files = {"00_abstract.md": "# A\\n\\nbody body body."}
         root = _make_project(tmp_path, files=files, bib="")
         from infrastructure.prose import analyze_files as af
+
         report = af({"00_abstract.md": "# A\\n\\nbody body body."})
         actual_grade = report.avg_flesch_kincaid_grade
         # Set band such that min == actual value.
         config = _config(
-            prose={"target_grade_level_min": actual_grade,
-                   "target_grade_level_max": actual_grade + 10.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": actual_grade,
+                "target_grade_level_max": actual_grade + 10.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root, write_outputs=False)
@@ -549,13 +610,16 @@ class TestNegativeControls:
         files = {"00_abstract.md": "# A\\n\\nbody body body."}
         root = _make_project(tmp_path, files=files, bib="")
         from infrastructure.prose import analyze_files as af
+
         report = af({"00_abstract.md": "# A\\n\\nbody body body."})
         actual_grade = report.avg_flesch_kincaid_grade
         # Set band entirely above actual value.
         config = _config(
-            prose={"target_grade_level_min": actual_grade + 5.0,
-                   "target_grade_level_max": actual_grade + 15.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": actual_grade + 5.0,
+                "target_grade_level_max": actual_grade + 15.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root, write_outputs=False)
@@ -567,14 +631,18 @@ class TestNegativeControls:
         files = {"00_abstract.md": "# A\\n\\n" + "word " * 200}
         root = _make_project(tmp_path, files=files, bib="")
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 100.0},  # impossible floor
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 100.0,
+            },  # impossible floor
             bibliography={"fail_on_missing": False},
         )
         run_prose_pipeline_with_analysis(config, project_root=root)
         checks_path = root / "output" / "checks.json"
         assert checks_path.exists()
         import json
+
         checks = json.loads(checks_path.read_text())
         assert any(not c["passed"] for c in checks)
 
@@ -588,10 +656,13 @@ class TestNegativeControls:
 
         report = af({"f.md": "# A\\n\\nbody."})
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0,
-                   "require_h1_per_section": False,
-                   "forbid_skipped_levels": False},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+                "require_h1_per_section": False,
+                "forbid_skipped_levels": False,
+            },
             bibliography={"fail_on_missing": False},
         )
         bib_path = tmp_path / "absent.bib"
@@ -642,8 +713,11 @@ class TestNegativeControls:
             bib="",
         )
         config = _config(
-            prose={"target_grade_level_min": -10.0, "target_grade_level_max": 30.0,
-                   "citation_density_min_per_1000": 0.0},
+            prose={
+                "target_grade_level_min": -10.0,
+                "target_grade_level_max": 30.0,
+                "citation_density_min_per_1000": 0.0,
+            },
             bibliography={"fail_on_missing": False},
         )
         artifacts = run_prose_pipeline_with_analysis(config, project_root=root, write_outputs=True)

@@ -17,7 +17,9 @@ about template status, validation depth, and forkability.
 ## Integrity and template-status gaps
 
 - Keep editorial metrics framed as diagnostics, not publication approval.
-- Add a generated evidence summary that separates readability, citation density, bibliography consistency, and structural outline results.
+- **Shipped:** `output/evidence_summary.json` separates readability, citation
+  density, bibliography consistency, structural outline results, and quality
+  flags under a versioned diagnostic-only schema.
 - Keep prose pipeline orchestration thin over `src/` and `infrastructure/prose`.
 
 ## Configurable-surface gaps
@@ -35,7 +37,7 @@ about template status, validation depth, and forkability.
 - Keep negative controls for skipped heading levels, citation-density
   regressions, and missing bibliography entries as the suite grows.
 - Add report-schema tests before downstream docs depend on new report fields.
-- Add or document a stable final artifact-manifest refresh path for single-stage analysis/render/copy checks.
+- Add or document a stable final artifact-manifest refresh path for single-stage analysis/render/copy checks. **Documented:** `infrastructure.core.pipeline.artifacts.snapshot_current_artifact_manifest` serves this role.
 
 ## Ordered improvement ladder
 

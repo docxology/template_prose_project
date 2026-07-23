@@ -143,6 +143,8 @@ After the run, look in `output/`:
 * `manuscript_report.json` — raw `ManuscriptReport`.
 * `checks.json` — list of `CheckResult` (one per configured check).
 * `review_report.md` — the human-readable review.
+* `evidence_summary.json` — versioned diagnostic-only evidence separated into
+  readability, citations, bibliography, structure, and quality flags.
 * `figures/{section_word_counts,readability_metrics,citation_density}.png`.
 * `data/manuscript_variables.json` — substitution variables for the abstract.
 * `run_summary.json` — one-line metadata.
@@ -155,7 +157,9 @@ built with `mmdc`, which requires a pinned `chrome-headless-shell`. Install
 it once (CI provisions it automatically; a fresh clone does not):
 
 ```bash
-npx --yes puppeteer browsers install chrome-headless-shell
+npm ci
+npx --no-install puppeteer browsers install chrome-headless-shell
+export PATH="$PWD/node_modules/.bin:$PATH"
 ```
 
 Without it the **PDF Rendering** stage fails while per-section slides still

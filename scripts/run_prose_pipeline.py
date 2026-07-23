@@ -74,6 +74,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     if artifacts.report_path is not None:
         print(str(artifacts.report_path))
+    if artifacts.evidence_summary_path is not None:
+        print(str(artifacts.evidence_summary_path))
 
     review_path = (project_root / config.report.output_path).resolve()
     write_review_report(
@@ -94,11 +96,10 @@ def main(argv: list[str] | None = None) -> int:
         "files": len(artifacts.manuscript_report.files),
         "total_words": artifacts.total_words,
         "all_passed": artifacts.all_passed,
+        "evidence_summary_path": str(artifacts.evidence_summary_path) if artifacts.evidence_summary_path else None,
         "checks": [c.to_dict() for c in artifacts.checks],
     }
-    summary_path.write_text(
-        json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
-    )
+    summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     print(str(summary_path))
 
     if args.strict and not artifacts.all_passed:
