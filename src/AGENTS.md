@@ -15,8 +15,9 @@ manuscript directory and the project's configuration.
 |---|---|
 | `__init__.py` | Public re-exports. |
 | `config.py` | `ProjectConfig` typed YAML loader (`ProseAnalysisConfig`, `BibliographyConfig`, `ReportConfig`). |
-| `pipeline/` | `run_prose_pipeline` plus `pipeline/checks.py` (`CHECK_REGISTRY`) — read manuscript, analyse, cross-check bib, evaluate checks, write JSON. |
+| `pipeline/` | `run_prose_pipeline` plus `pipeline/checks.py` (`CHECK_REGISTRY`) and `pipeline/report_schema.py` (`validate_evidence_summary`) — read manuscript, analyse, cross-check bib, evaluate checks, write JSON. |
 | `figures.py` | `plot_section_word_counts`, `plot_readability_metrics`, `plot_citation_density`, `generate_all_figures`. Scripts load typed reports via `infrastructure.prose.report.load_report_json`. |
+| `llm_review.py` | `build_llm_review_receipt`, `validate_transcript` — offline, fail-closed review evidence (an explicit disabled skip by default). |
 | `manuscript_variables.py` | `load_report_payload`, `compute_variables`, `substitute_in_text`, `write_variables` for abstract substitution. |
 | `report.py` | `write_review_report` — assemble the markdown review. |
 | `prose_facade.py` | Project-owned report Protocols (`ManuscriptReportLike`, `FileReportLike`, …) plus `render_outline` — decouples `src/` from `infrastructure.prose` internals. |
@@ -32,8 +33,10 @@ flowchart LR
     REP[report.py<br/>write_review_report]
     INIT[__init__.py<br/>re-exports]
     PF[prose_facade.py<br/>report Protocols]
+    LLM[llm_review.py<br/>review receipt]
 
     CFG --> PIPE
+    PIPE --> LLM
     PIPE --> REP
     PIPE -. ManuscriptReport .-> FIG
     PIPE -. ManuscriptReport .-> MV
@@ -45,10 +48,11 @@ flowchart LR
     INIT -. exposes .-> FIG
     INIT -. exposes .-> MV
     INIT -. exposes .-> REP
+    INIT -. exposes .-> LLM
 
     classDef code fill:#1e3a8a,stroke:#0f172a,color:#fff
     classDef pkg fill:#0f172a,stroke:#0f172a,color:#fff
-    class CFG,PIPE,FIG,MV,REP code
+    class CFG,PIPE,FIG,MV,REP,LLM code
     class INIT pkg
 ```
 

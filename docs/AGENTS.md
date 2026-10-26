@@ -19,7 +19,7 @@ in this project.
 | File | Purpose | Lines |
 |---|---|---|
 | [`README.md`](README.md) | Quick navigation and audience-targeted entry points | 120 |
-| [`AGENTS.md`](AGENTS.md) | This file — technical overview of `docs/` | 170 |
+| [`AGENTS.md`](AGENTS.md) | This file — technical overview of `docs/` | 171 |
 | [`agent_instructions.md`](agent_instructions.md) | 7 hard rules for AI agents (read-first priority); verification checklist | 205 |
 | [`architecture.md`](architecture.md) | Two-layer compliance + data-flow sequence diagram | 80 |
 | [`style_guide.md`](style_guide.md) | 7 rules: Zero-Mock, Infrastructure Delegation, Thin Orchestrator, Show-Not-Tell, Explicit Paths, Type Hints, Error Messages | 268 |
@@ -126,11 +126,12 @@ viable project.
 
 | Path | Status | Enforcing gate / source of truth |
 |------|--------|---------------------------------|
-| `src/pipeline/` | REQUIRED | Coverage gate; every `_check_<name>` is exercised by `tests/test_pipeline.py` |
+| `src/pipeline/` | REQUIRED | Coverage gate; every `_check_<name>` is exercised by `tests/test_pipeline.py`; `pipeline/report_schema.py` validates `evidence_summary` (`tests/test_report_schema.py`) |
 | `src/config.py` | REQUIRED | `tests/test_config.py` |
 | `src/figures.py` | REQUIRED | `tests/test_figures.py` |
 | `src/manuscript_variables.py` | REQUIRED | `tests/test_manuscript_variables.py` + the live `{{TOKEN}}` cross-reference test |
 | `src/report.py` | REQUIRED | `tests/test_report.py` |
+| `src/llm_review.py` | REQUIRED | imported by `src/__init__.py` and `src/pipeline/__init__.py` (writes `output/llm_review_receipt.json`); `tests/test_llm_review.py` |
 | `src/prose_facade.py` | REQUIRED | `tests/test_prose_facade.py`; drives `bibliography_consistency` (`parse_bib_keys`) and the report outline section (`render_outline`) |
 | `tests/` (all `test_*.py`) | REQUIRED | 90% coverage gate (per-project and root pipeline) |
 | `tests/conftest.py` | REQUIRED | Pinning `MPLBACKEND=Agg` is load-bearing for CI |
