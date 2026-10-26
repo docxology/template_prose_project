@@ -36,8 +36,10 @@ Reading order is mandatory, not advisory. Each document gates a category of acti
 The test suite covers `tests/test_config.py`, `tests/test_figures.py`,
 `tests/test_manuscript_variables.py`, `tests/test_pipeline.py`,
 `tests/test_pipeline_integration.py`, `tests/test_prose_facade.py`,
-`tests/test_report.py`, and `tests/test_scripts.py`. Live test count +
-achieved coverage are tracked in
+`tests/test_report.py`, `tests/test_scripts.py`,
+`tests/test_claim_ledger.py`, `tests/test_llm_review.py`,
+`tests/test_manuscript_structure.py`, and `tests/test_report_schema.py`.
+Live test count + achieved coverage are tracked in
 [`docs/_generated/COUNTS.md`](../../../../docs/_generated/COUNTS.md) —
 do not hardcode either number in prose. The gate is **90%**
 (`fail_under = 90` in the project's own `pyproject.toml` and at the root

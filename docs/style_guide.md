@@ -111,8 +111,8 @@ def main():
 **Correct** — `scripts/` calls `src/` for the orchestration:
 ```python
 # GOOD — load config, run pipeline, surface artefacts
-from projects.template_prose_project.src.config import load_project_config
-from projects.template_prose_project.src.pipeline import run_prose_pipeline
+from src.config import load_project_config
+from src.pipeline import run_prose_pipeline
 
 def main():
     config = load_project_config(Path("projects/templates/template_prose_project/manuscript/config.yaml"))

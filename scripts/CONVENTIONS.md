@@ -69,7 +69,7 @@ import logging
 
 # 3. Path bootstrapping (per project — not a uv workspace member)
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-REPO_ROOT = PROJECT_ROOT.parent.parent
+REPO_ROOT = PROJECT_ROOT.parents[2]   # project lives at projects/templates/<name>/
 for p in (REPO_ROOT, PROJECT_ROOT, PROJECT_ROOT / "src"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))

@@ -123,10 +123,14 @@ Other test files use the same `Test<Concept>` convention:
 (free functions), `tests/test_manuscript_variables.py` (free functions),
 `tests/test_pipeline_integration.py` (one end-to-end test on the bundled
 manuscript), `tests/test_report.py` (free functions),
-`tests/test_scripts.py` (subprocess invocations).
+`tests/test_scripts.py` (subprocess invocations),
+`tests/test_prose_facade.py` (one class per helper),
+`tests/test_claim_ledger.py`, `tests/test_llm_review.py`,
+`tests/test_manuscript_structure.py`, and `tests/test_report_schema.py`
+(free functions).
 
-Method naming: `test_<what_is_being_tested>` and every test method has
-a docstring.
+Method naming: `test_<what_is_being_tested>`; add a docstring when the
+intent is not obvious from the name.
 
 ## Parametrize Usage
 

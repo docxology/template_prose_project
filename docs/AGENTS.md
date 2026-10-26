@@ -20,7 +20,7 @@ in this project.
 |---|---|---|
 | [`README.md`](README.md) | Quick navigation and audience-targeted entry points | 120 |
 | [`AGENTS.md`](AGENTS.md) | This file — technical overview of `docs/` | 170 |
-| [`agent_instructions.md`](agent_instructions.md) | 7 hard rules for AI agents (read-first priority); verification checklist | 203 |
+| [`agent_instructions.md`](agent_instructions.md) | 7 hard rules for AI agents (read-first priority); verification checklist | 205 |
 | [`architecture.md`](architecture.md) | Two-layer compliance + data-flow sequence diagram | 80 |
 | [`style_guide.md`](style_guide.md) | 7 rules: Zero-Mock, Infrastructure Delegation, Thin Orchestrator, Show-Not-Tell, Explicit Paths, Type Hints, Error Messages | 268 |
 | [`syntax_guide.md`](syntax_guide.md) | Pandoc-crossref `[@sec:…]`, all eleven `{{TOKEN}}`s, code blocks, no-figures rationale | 209 |
