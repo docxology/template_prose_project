@@ -26,6 +26,10 @@ uv run pytest projects/templates/template_prose_project/tests/ \
 | `test_report.py` | Markdown review-report assembly. |
 | `test_prose_facade.py` | Report Protocols, `render_outline`, `parse_bib_keys`. |
 | `test_scripts.py` | Real `subprocess.run` against the orchestrator scripts. |
+| `test_claim_ledger.py` | `data/claim_ledger.yaml` sources resolve; values re-checked against live code/prose. |
+| `test_llm_review.py` | Optional LLM review evidence: offline, fail-closed receipts. |
+| `test_manuscript_structure.py` | Section labels unique; every `[@sec:…]` resolves to a `{#sec:…}` label. |
+| `test_report_schema.py` | Strict `evidence_summary` schema regression controls. |
 
 ## Conventions
 

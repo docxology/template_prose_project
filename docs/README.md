@@ -15,12 +15,13 @@ flowchart LR
     HUB --> OC[output_conventions.md<br/>producer/consumer table]
     HUB --> TS[troubleshooting.md<br/>diagnostic flowchart]
     HUB --> FAQ[faq.md<br/>architecture · testing · manuscript]
+    HUB --> FG[forking_guide.md<br/>fork in 5 minutes]
     HUB --> META[AGENTS.md · README.md]
 
     classDef d fill:#0f172a,stroke:#0f172a,color:#fff
     classDef f fill:#0f766e,stroke:#0f172a,color:#fff
     class HUB d
-    class AI,ARCH,TP,RP,SG,SX,QS,OC,TS,FAQ,META f
+    class AI,ARCH,TP,RP,SG,SX,QS,OC,TS,FAQ,FG,META f
 ```
 
 ## Quick links
@@ -37,6 +38,7 @@ flowchart LR
 | [`output_conventions.md`](output_conventions.md) | Where every artefact lands on disk. |
 | [`troubleshooting.md`](troubleshooting.md) | Diagnostic flowchart for common failures. |
 | [`faq.md`](faq.md) | Recurring questions about architecture, testing, manuscript. |
+| [`forking_guide.md`](forking_guide.md) | Copying the exemplar into a new project: required vs aesthetic, friction points. |
 | [`AGENTS.md`](AGENTS.md) | Agent-oriented walkthrough of this hub (read-first reference). |
 
 ## Audience-targeted entry points

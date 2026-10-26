@@ -160,10 +160,12 @@ built with `mmdc`, which requires a pinned `chrome-headless-shell`. Install
 it once (CI provisions it automatically; a fresh clone does not):
 
 ```bash
-npm ci
-npx --no-install puppeteer browsers install chrome-headless-shell
-export PATH="$PWD/node_modules/.bin:$PATH"
+npx --yes puppeteer browsers install chrome-headless-shell
 ```
+
+This mirror has no `package.json`, so `mmdc` itself comes from the monorepo
+checkout above (`node_modules/.bin`); the browser install is a one-time
+per-machine step.
 
 Without it the **PDF Rendering** stage fails while per-section slides still
 render — see [`docs/troubleshooting.md`](docs/troubleshooting.md#pdf-rendering-stage-fails-mmdc-could-not-find-chrome).

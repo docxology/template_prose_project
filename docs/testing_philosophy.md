@@ -44,6 +44,14 @@ Files (`projects/templates/template_prose_project/tests/`):
   (15 tests).
 - `test_scripts.py` — invokes the three orchestrator scripts via
   `subprocess.run` (4 tests).
+- `test_claim_ledger.py` — binds `data/claim_ledger.yaml` sources to real
+  files and re-checks each value against live code or manuscript prose.
+- `test_llm_review.py` — offline, fail-closed coverage for the optional LLM
+  review receipt and transcript validation.
+- `test_manuscript_structure.py` — section labels are unique and every
+  `[@sec:…]` cross-reference resolves to a declared `{#sec:…}` label.
+- `test_report_schema.py` — strict `evidence_summary` schema regression
+  controls (`src/pipeline/report_schema.validate_evidence_summary`).
 
 These per-file counts are a point-in-time snapshot (last verified against
 `--collect-only`); the authoritative live number is always

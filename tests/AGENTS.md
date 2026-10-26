@@ -16,12 +16,16 @@ flowchart TB
     T --> REP[test_report.py<br/>markdown assembly]
     T --> PF[test_prose_facade.py<br/>report Protocols · render_outline · parse_bib_keys]
     T --> SCR[test_scripts.py<br/>real subprocess invocation]
+    T --> CL[test_claim_ledger.py<br/>claim-ledger source binding]
+    T --> LLM[test_llm_review.py<br/>fail-closed review receipts]
+    T --> MS[test_manuscript_structure.py<br/>labels · cross-references]
+    T --> RS[test_report_schema.py<br/>evidence-summary schema]
 
     classDef d fill:#0f172a,stroke:#0f172a,color:#fff
     classDef code fill:#1e3a8a,stroke:#0f172a,color:#fff
     classDef doc fill:#0f766e,stroke:#0f172a,color:#fff
     class T d
-    class CFG,PIPE,INTEG,FIG,MV,REP,PF,SCR code
+    class CFG,PIPE,INTEG,FIG,MV,REP,PF,SCR,CL,LLM,MS,RS code
     class META doc
 ```
 
