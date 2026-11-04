@@ -4,8 +4,8 @@ Domain orchestration for the prose-review pipeline.
 
 ## Purpose
 
-Layer-2 code: pure orchestration over `infrastructure/prose/` and
-`infrastructure/reference/citation/`. Contains no novel algorithm of
+Layer-2 code: pure orchestration over `infrastructure.prose` and
+`infrastructure.reference.citation`. Contains no novel algorithm of
 its own — its job is to wire the infrastructure modules to the
 manuscript directory and the project's configuration.
 
