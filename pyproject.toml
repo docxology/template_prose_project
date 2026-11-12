@@ -11,7 +11,7 @@ version = "0.4.2"
 license = {text = "MIT"}
 description = "Configurable prose-analysis pipeline (readability + structure + quality + reference checking) built on infrastructure/prose and infrastructure/reference."
 authors = [{name = "Daniel Ari Friedman", email = "daniel@activeinference.institute"}]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "pyyaml>=6.0",
     "matplotlib>=3.7",
