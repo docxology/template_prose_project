@@ -7,8 +7,8 @@ consumer. This file is the single source of truth for that mapping.
 
 ```mermaid
 flowchart TB
-    P[projects/templates/template_prose_project/]
-    P --> M[manuscript/<br/>committed source]
+    P[template_prose_project/]
+    P --> M[docs/manuscript/<br/>committed source]
     P --> OUT[output/<br/>tracked public artifacts · regeneratable]
 
     M --> M_CFG[config.yaml<br/>single source of truth]
@@ -44,9 +44,12 @@ flowchart TB
 | `output/review_report.md` | `run_prose_pipeline.py` (`src.report.write_review_report`) | humans |
 | `output/evidence_summary.json` | `run_prose_pipeline.py` (`src.pipeline.build_evidence_summary`) | downstream diagnostics; never publication approval |
 | `output/run_summary.json` | `run_prose_pipeline.py` | downstream tooling |
+| `output/manuscript/` | `z_generate_manuscript_variables.py` and the shared renderer | Token-resolved working tree used by Stage 03 |
+| `output/pdf/template_prose_project_combined.pdf`, `output/web/index.html`, `output/slides/` | Stage 03 | PDF, HTML, and per-section slide readers |
+| `output/reports/validation_report.json`, `output/reports/rendered_provenance.json` | Stage 04 | Validation and source-to-render provenance |
 | `output/data/manuscript_variables.json` | `z_generate_manuscript_variables.py` | rendering (substituted into markdown) |
-| `output/figures/*.png` | `y_generate_prose_figures.py` | humans / CI dashboards — standalone diagnostics, deliberately **not** embedded in the manuscript PDF (see `manuscript/03_results.md`) |
-| `manuscript/references.bib` | **NOT** modified by this pipeline (read-only) | `pipeline/` cross-checks against it |
+| `output/figures/*.png` | `y_generate_prose_figures.py` | humans / CI dashboards — standalone diagnostics, deliberately **not** embedded in the manuscript PDF (see `docs/manuscript/03_results.md`) |
+| `docs/manuscript/references.bib` | **NOT** modified by this pipeline (read-only) | `pipeline/` cross-checks against it |
 
 ## Conventions
 
@@ -60,7 +63,7 @@ flowchart TB
   for archival stability.
 * **`output/` is tracked for this public exemplar** when files stay below the
   50 MB public output ceiling. Everything in it is regenerable from
-  `manuscript/` + `manuscript/config.yaml`.
-* **`manuscript/references.bib` is read-only here.** The prose project
+  `docs/manuscript/` + `docs/manuscript/config.yaml`.
+* **`docs/manuscript/references.bib` is read-only here.** The prose project
   *validates* citations; it never writes to the bib file. Contrast with
   the `template_search_project` exemplar, which auto-populates it.

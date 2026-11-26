@@ -5,7 +5,7 @@ This section documents the artefacts produced by the prose-review run.
 ```mermaid
 flowchart TB
     P[projects/templates/template_prose_project/]
-    P --> M[manuscript/]
+    P --> M[docs/manuscript/]
     P --> OUT[output/<br/>tracked public artifacts · regenerable]
 
     M --> M_CFG[config.yaml<br/>single source of truth]

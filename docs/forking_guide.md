@@ -6,39 +6,14 @@
 > find out *what's required vs aesthetic, what's enforced vs convention,
 > and what they'll hit friction on*.
 
-## TL;DR
+## Start a fork
 
-```bash
-# 0. From the repo root, install deps once
-uv sync
-
-# 1. Clean-copy the exemplar to your new project name
-uv run python scripts/audit/copy_exemplar.py \
-  --source templates/template_prose_project \
-  --dest projects/working/my_review_project \
-  --new-name my_review_project
-
-# 2. Drop in your own manuscript
-rm projects/working/my_review_project/manuscript/0*_*.md projects/working/my_review_project/manuscript/99_*.md
-rsync -a /path/to/your/manuscript_sections/ projects/working/my_review_project/manuscript/
-cp /path/to/your/references.bib projects/working/my_review_project/manuscript/
-
-# 3. Run the tests against your fork
-uv run pytest projects/working/my_review_project/tests/ \
-    --cov=projects/working/my_review_project/src \
-    --cov-fail-under=90 -q
-
-# 4. Run the prose pipeline against your fork
-uv run python projects/working/my_review_project/scripts/run_prose_pipeline.py
-```
-
-**⚠️ Confidentiality invariant.** The repo `.gitignore` is configured so
-that **only** the public canonical exemplars listed in
-[`../../../docs/_generated/active_projects.md`](../../../../docs/_generated/active_projects.md)
-under `projects/` are ever git-tracked. Your fork (`projects/working/my_review_project/`)
-is local-only and won't be pushed to the public repo even if you `git
-add -f` it. Read [`../../../CLAUDE.md`](../../../../CLAUDE.md)
-"CONFIDENTIALITY INVARIANT" for the full fence.
+Create a fork of this standalone repository and register it under
+`projects/working/my_review_project` in the [pinned runner](quickstart.md).
+Replace the manuscript sections and bibliography in `docs/manuscript/`
+and update the metadata and policy in `docs/manuscript/config.yaml`. Run
+the tests and the prose review using the commands in the quickstart with
+your project name.
 
 ## What you're forking
 
@@ -51,12 +26,12 @@ no-skipped-heading-levels, bibliography consistency via
 Markdown + three PNGs.
 
 The transferable pattern is **self-grading**: the bundled
-`manuscript/config.yaml` is deliberately permissive (FKGL band 10–18,
+`docs/manuscript/config.yaml` is deliberately permissive (FKGL band 10–18,
 citation floor 0.0) so the exemplar's own abstract passes its own gate.
 A forker who tightens any threshold without rewriting the methodology
 section will discover that the project's own documentation fails the
 gate that the documentation describes. The
-[`manuscript/config.yaml.example`](../manuscript/config.yaml.example)
+[`docs/manuscript/config.yaml.example`](manuscript/config.yaml.example)
 ships a stricter starting point (FKGL 12–16, citation floor 3.0,
 `fail_on_unused=true`) for a more realistic editorial workflow.
 
@@ -68,21 +43,21 @@ AESTHETIC path is convention only. The full inventory lives in
 
 | Class | Examples | Action |
 |---|---|---|
-| REQUIRED — pipeline gate | All `src/*.py`, all `tests/test_*.py`, `tests/conftest.py` (pins `MPLBACKEND=Agg`), `pyproject.toml`, `manuscript/config.yaml`, `manuscript/*.md`, `manuscript/references.bib`, `manuscript/preamble.md` | Keep them; the 90% coverage gate + LaTeX render depend on them |
+| REQUIRED — pipeline gate | All `src/*.py`, all `tests/test_*.py`, `tests/conftest.py` (pins `MPLBACKEND=Agg`), `pyproject.toml`, `docs/manuscript/config.yaml`, `docs/manuscript/*.md`, `docs/manuscript/references.bib`, `docs/manuscript/preamble.md` | Keep them; the 90% coverage gate + LaTeX render depend on them |
 | REQUIRED — orchestration | `scripts/run_prose_pipeline.py`, `scripts/y_generate_prose_figures.py`, `scripts/z_generate_manuscript_variables.py` | Subprocess-tested in `tests/test_scripts.py`; the alphabetical prefix (none / `y_` / `z_`) is an ordering hint |
-| AESTHETIC | `docs/*.md`, `*/STYLE.md`, `*/PATTERNS.md`, `*/CONVENTIONS.md`, `*/AGENTS.md`, `*/README.md`, `scripts/00_preflight.py`, `manuscript/config.yaml.example` | Drift detected only by `scripts/audit/check_template_drift.py` and audits |
+| AESTHETIC | `docs/*.md`, `*/STYLE.md`, `*/PATTERNS.md`, `*/CONVENTIONS.md`, `*/AGENTS.md`, `*/README.md`, `scripts/00_preflight.py`, `docs/manuscript/config.yaml.example` | Drift detected only by `scripts/audit/check_template_drift.py` and audits |
 
 ## Concrete first steps after fork
 
 ### 1. Drop in your manuscript
-Replace `manuscript/00_abstract.md` through `manuscript/99_references.md`
+Replace `docs/manuscript/00_abstract.md` through `docs/manuscript/99_references.md`
 with your own sections. Section files are CommonMark Markdown with
-Pandoc `[@key]` citations. `manuscript/references.bib` is
+Pandoc `[@key]` citations. `docs/manuscript/references.bib` is
 **hand-curated and read-only** — `_check_bibliography` validates that
 every `[@key]` cited resolves to an entry but never writes to the bib.
 
 ### 2. Update thresholds
-Every knob lives in `manuscript/config.yaml`. The defaults are
+Every knob lives in `docs/manuscript/config.yaml`. The defaults are
 permissive so the bundled prose passes; tighten them once your real
 manuscript is in:
 
@@ -112,7 +87,7 @@ The loader rejects unknown YAML keys and enforces invariants
 uv run python scripts/audit/check_template_drift.py
 ```
 20 unit tests in
-[`tests/infra_tests/test_check_template_drift.py`](../../../../tests/infra_tests/test_check_template_drift.py)
+[`tests/infra_tests/test_check_template_drift.py`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/tests/infra_tests/test_check_template_drift.py)
 prove each detector catches the bug class it was built for.
 
 ## Common friction points (and fixes)
@@ -120,9 +95,9 @@ prove each detector catches the bug class it was built for.
 | Symptom | Cause | Fix |
 |---|---|---|
 | Tests collect 0 / coverage 0% | Per-project `.venv` lacks `pytest` (`uv venv` without `uv sync`) | The runner now hard-fails; the canonical gate is the `uv run pytest …` command above |
-| `PDF Rendering` stage fails with `mmdc could not find Chrome` | `manuscript/05_pipeline_internals.md` embeds `mermaid` blocks | One-time: `npx --yes puppeteer browsers install chrome-headless-shell`; `scripts/00_preflight.py` emits an actionable warning before the PDF stage |
+| `PDF Rendering` stage fails with `mmdc could not find Chrome` | `docs/manuscript/05_pipeline_internals.md` embeds `mermaid` blocks | One-time: `npx --yes puppeteer browsers install chrome-headless-shell`; `scripts/00_preflight.py` emits an actionable warning before the PDF stage |
 | Matplotlib backend error in CI | `MPLBACKEND` not set | `tests/conftest.py` pins `MPLBACKEND=Agg` at import time — keep it |
-| `Unknown prose key` ValueError | Typo in `manuscript/config.yaml` (e.g., `target_grade_level_minimum`) | The strict loader rejects unknown keys; check spelling against `_KNOWN_PROSE_KEYS` in `src/config.py` |
+| `Unknown prose key` ValueError | Typo in `docs/manuscript/config.yaml` (e.g., `target_grade_level_minimum`) | The strict loader rejects unknown keys; check spelling against `_KNOWN_PROSE_KEYS` in `src/config.py` |
 | `{{TOKEN}}` appears literally in the rendered PDF | `scripts/z_generate_manuscript_variables.py` did not run or the token is not in `compute_variables()` | Re-run `z_generate_manuscript_variables.py`; if still literal, add to `ManuscriptVariables` |
 
 ## Sibling exemplar
@@ -140,4 +115,4 @@ than editorial, fork that one instead.
 - [`testing_philosophy.md`](testing_philosophy.md) — zero-mock standard
 - [`rendering_pipeline.md`](rendering_pipeline.md) — 4-phase pipeline
 - [`faq.md`](faq.md) — recurring questions
-- [`../../../scripts/audit/check_template_drift.py`](../../../../scripts/audit/check_template_drift.py) — the drift checker
+- [`../../../scripts/audit/check_template_drift.py`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/scripts/audit/check_template_drift.py) — the drift checker

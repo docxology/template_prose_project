@@ -1,6 +1,6 @@
 # Manuscript Syntax Reference (prose_project)
 
-Project-specific overlay on the canonical [`docs/guides/manuscript-semantics.md`](../../../../docs/guides/manuscript-semantics.md) — read that file first; this file documents **prose_project**-specific conventions.
+Project-specific overlay on the canonical [`docs/guides/manuscript-semantics.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/guides/manuscript-semantics.md) — read that file first; this file documents **prose_project**-specific conventions.
 
 The prose exemplar deliberately omits equations and figures-from-data; its job is to *evaluate* manuscripts, not produce numerical artefacts. The pipeline still emits three diagnostic figures (per-file word counts, readability metrics, citation density) into `output/figures/` for human inspection, but they are not embedded in the manuscript body — they are part of the review report.
 
@@ -19,7 +19,7 @@ Pipeline behaviour:
 * `bibliography.fail_on_missing: true` — a `[@key]` whose key is not in `references.bib` makes the `bibliography_consistency` check fail.
 * `bibliography.fail_on_unused: false` — bib entries with no citations only produce warnings.
 
-The [`citation_density_above_floor`](../src/pipeline/checks.py) check (`_check_citation_density` in `src/pipeline/checks.py`) enforces ≥ `prose.citation_density_min_per_1000` citations per 1000 words.
+The [`citation_density_above_floor`](../../src/pipeline/checks.py) check (`_check_citation_density` in `src/pipeline/checks.py`) enforces ≥ `prose.citation_density_min_per_1000` citations per 1000 words.
 
 ## Section labels
 
@@ -47,7 +47,7 @@ The Pandoc renderer uses `--number-sections`, so **never write manual numbers** 
 
 ## `{{TOKEN}}` substitution
 
-`scripts/z_generate_manuscript_variables.py` computes token values via `src/manuscript_variables.py::compute_variables()` and writes substituted copies of `manuscript/*.md` to `output/manuscript/` via `infrastructure.rendering.manuscript_injection.write_resolved_manuscript_tree()`. This file (`SYNTAX.md`), `AGENTS.md`, and `README.md` are excluded from `output/manuscript/` so their literal `{{TOKEN}}` examples are never substituted.
+`scripts/z_generate_manuscript_variables.py` computes token values via `src/manuscript_variables.py::compute_variables()` and writes substituted copies of `docs/manuscript/*.md` to `output/manuscript/` via `infrastructure.rendering.manuscript_injection.write_resolved_manuscript_tree()`. This file (`SYNTAX.md`), `AGENTS.md`, and `README.md` are excluded from `output/manuscript/` so their literal `{{TOKEN}}` examples are never substituted.
 
 | Token | Source |
 |---|---|
@@ -63,7 +63,7 @@ The Pandoc renderer uses `--number-sections`, so **never write manual numbers** 
 | `{{LONGEST_SECTION_WORDS}}` | max per-file word count |
 | `{{SHORTEST_SECTION_WORDS}}` | min per-file word count |
 
-Define new tokens in [`src/manuscript_variables.py`](../src/manuscript_variables.py) and they become available everywhere.
+Define new tokens in [`src/manuscript_variables.py`](../../src/manuscript_variables.py) and they become available everywhere.
 
 ## Preamble
 
@@ -71,8 +71,8 @@ Define new tokens in [`src/manuscript_variables.py`](../src/manuscript_variables
 
 ## See also
 
-- [`../../../docs/guides/manuscript-semantics.md`](../../../../docs/guides/manuscript-semantics.md) — Repository-wide canonical semantics
+- [`../../../docs/guides/manuscript-semantics.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/guides/manuscript-semantics.md) — Repository-wide canonical semantics
 - [`AGENTS.md`](AGENTS.md) — Substitution-marker registry and editing checklist
-- [`../docs/output_conventions.md`](../docs/output_conventions.md) — What lands in `output/`
-- [`../../../infrastructure/prose/SKILL.md`](../../../../infrastructure/prose/SKILL.md) — Underlying analysis API
-- [`../../../infrastructure/reference/SKILL.md`](../../../../infrastructure/reference/SKILL.md) — Bibliography validation API
+- [`../docs/output_conventions.md`](../output_conventions.md) — What lands in `output/`
+- [`../../../infrastructure/prose/SKILL.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/infrastructure/prose/SKILL.md) — Underlying analysis API
+- [`../../../infrastructure/reference/SKILL.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/infrastructure/reference/SKILL.md) — Bibliography validation API

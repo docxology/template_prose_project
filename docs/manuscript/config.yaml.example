@@ -47,11 +47,11 @@ metadata:
   license: "MIT"   # Zenodo license; also PDF publishing block
   language: "en"
 
-# Abstract for deposits: manuscript/00_abstract.md (hydrated copy preferred from
+# Abstract for deposits: docs/manuscript/00_abstract.md (hydrated copy preferred from
 # output/manuscript/00_abstract.md after analysis). Not a config key.
 
 # Path to the manuscript directory, relative to project root.
-manuscript_dir: "manuscript"
+manuscript_dir: "docs/manuscript"
 
 # ---------------------------------------------------------------------------
 # Prose-analysis thresholds — STRICTER than the bundled config.
@@ -90,7 +90,7 @@ prose:
 # Bibliography cross-check.
 # ---------------------------------------------------------------------------
 bibliography:
-  references_path: "manuscript/references.bib"
+  references_path: "docs/manuscript/references.bib"
   fail_on_missing: true   # cited [@key] not in bib → fail
   fail_on_unused: true    # bib entry never cited → fail (stricter than bundled)
 

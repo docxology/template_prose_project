@@ -1,6 +1,6 @@
 # Results {#sec:results}
 
-After running `scripts/run_prose_pipeline.py` with the bundled `manuscript/config.yaml` and the manuscript described in this paper, the project produces the following on-disk artefacts:
+After running `scripts/run_prose_pipeline.py` with the bundled `docs/manuscript/config.yaml` and the manuscript described in this paper, the project produces the following on-disk artefacts:
 
 * `output/manuscript_report.json` — the raw `ManuscriptReport` JSON.
 * `output/checks.json` — one `CheckResult` per configured check.
@@ -20,7 +20,7 @@ The pass/fail status of each configured check is recorded in `output/checks.json
 * **`citation_density_above_floor`** — citations per 1000 words must meet `prose.citation_density_min_per_1000`. The bundled config sets the floor to `0.0` (disabled) so the run is green out of the box; researchers should raise it to match the publication target.
 * **`no_skipped_heading_levels`** — every file in this manuscript uses contiguous heading levels.
 * **`every_file_has_h1`** — every prose file starts with an H1.
-* **`bibliography_consistency`** — every `[@key]` in the prose resolves against `manuscript/references.bib`.
+* **`bibliography_consistency`** — every `[@key]` in the prose resolves against `docs/manuscript/references.bib`.
 
 The figures in `output/figures/` are colour-blind-safe (Wong 2011 palette) [@wong2011points], 300 dpi, and PNG-only for archival stability. They are referenced in [@sec:pipeline_internals] where we walk through the on-disk artefact set in full.
 

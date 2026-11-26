@@ -48,11 +48,11 @@ uv run python scripts/pipeline/stage_05_copy.py --project templates/template_pro
 - **Config validation is strict, not permissive.** `src/config.py::ProjectConfig.from_dict`
   rejects unknown keys and out-of-range values by raising `ValueError` with the
   offending value and the allowed set quoted — see
-  [`docs/faq.md`](../../../docs/faq.md).
+  [`docs/faq.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/faq.md).
 
 ## Cross-refs
 
-- Project contract: [`AGENTS.md`](../../../AGENTS.md)
+- Project contract: [`AGENTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/AGENTS.md)
 - README: [`README.md`](../../../README.md)
-- TODO: [`TODO.md`](../../../TODO.md)
-- Exemplar roster: [`projects/AGENTS.md`](../../../../../AGENTS.md)
+- TODO: [`TODO.md`](../../../docs/TODO.md)
+- Exemplar roster: [`projects/AGENTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/AGENTS.md)

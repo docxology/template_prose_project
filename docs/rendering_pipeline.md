@@ -1,6 +1,6 @@
 # Rendering Pipeline: Manuscript → PDF
 
-The `manuscript/` directory contains the narrative components of the
+The `docs/manuscript/` directory contains the narrative components of the
 editorial-review project. It is compiled into a publication-ready PDF
 automatically by the template's rendering infrastructure. This document
 describes every step, what it produces, which scripts run it, and how to
@@ -9,7 +9,7 @@ troubleshoot failures.
 ## Prerequisite: Mermaid diagrams need `chrome-headless-shell`
 
 This manuscript embeds **Mermaid** diagrams (see
-`manuscript/05_pipeline_internals.md`). When the rendering infrastructure
+`docs/manuscript/05_pipeline_internals.md`). When the rendering infrastructure
 builds the **combined PDF**, every inline ```mermaid``` block is rasterised
 by `mmdc` (mermaid-cli), which drives a **pinned** `chrome-headless-shell`
 via Puppeteer. If that exact Chrome build is absent from the Puppeteer cache
@@ -34,6 +34,8 @@ success with slides-but-no-combined-PDF is the signature of this missing
 dependency. See
 [troubleshooting.md](troubleshooting.md#pdf-rendering-stage-fails-mmdc-could-not-find-chrome).
 
+Use the [pinned quickstart](quickstart.md) to register this checkout and prepare the environment before running these commands.
+
 ## The Self-Referential Flow
 
 The pipeline has four phases. Each phase must complete before the next
@@ -41,17 +43,17 @@ begins.
 
 ### Phase 1 — Run the Prose Pipeline
 
-**Script**: `projects/templates/template_prose_project/scripts/run_prose_pipeline.py`
+**Script**: `projects/working/template_prose_project/scripts/run_prose_pipeline.py`
 
 **Command**:
 ```bash
-uv run python projects/templates/template_prose_project/scripts/run_prose_pipeline.py
+uv run python projects/working/template_prose_project/scripts/run_prose_pipeline.py
 ```
 
-**Inputs**: `manuscript/*.md`, `manuscript/references.bib`,
-`manuscript/config.yaml`.
+**Inputs**: `docs/manuscript/*.md`, `docs/manuscript/references.bib`,
+`docs/manuscript/config.yaml`.
 
-**What it does**: Loads `ProjectConfig` from `manuscript/config.yaml`, calls
+**What it does**: Loads `ProjectConfig` from `docs/manuscript/config.yaml`, calls
 `infrastructure.prose.analyze_manuscript` to produce the `ManuscriptReport`,
 passes it to `src.pipeline.run_prose_pipeline`, which evaluates the
 configured checks (the bibliography check compares cited keys against
@@ -72,17 +74,17 @@ The `--strict` flag causes the script to exit non-zero if any check fails.
 ### Phase 2 — Generate Figures and Manuscript Variables
 
 **Scripts**:
-`projects/templates/template_prose_project/scripts/y_generate_prose_figures.py` and
-`projects/templates/template_prose_project/scripts/z_generate_manuscript_variables.py`
+`projects/working/template_prose_project/scripts/y_generate_prose_figures.py` and
+`projects/working/template_prose_project/scripts/z_generate_manuscript_variables.py`
 
 **Commands**:
 ```bash
-uv run python projects/templates/template_prose_project/scripts/y_generate_prose_figures.py
-uv run python projects/templates/template_prose_project/scripts/z_generate_manuscript_variables.py
+uv run python projects/working/template_prose_project/scripts/y_generate_prose_figures.py
+uv run python projects/working/template_prose_project/scripts/z_generate_manuscript_variables.py
 ```
 
 **Inputs**: `output/manuscript_report.json` (produced by Phase 1) +
-`manuscript/config.yaml` for the variables script.
+`docs/manuscript/config.yaml` for the variables script.
 
 **What `y_generate_prose_figures.py` does**: Loads the typed
 `ManuscriptReport` JSON via
@@ -93,7 +95,7 @@ uv run python projects/templates/template_prose_project/scripts/z_generate_manus
 JSON via `src/manuscript_variables.py::load_report_payload`, calls
 `compute_variables` to derive the eleven substitution values, writes them
 to `output/data/manuscript_variables.json`, and produces token-substituted
-copies of every `manuscript/*.md` under `output/manuscript/`.
+copies of every `docs/manuscript/*.md` under `output/manuscript/`.
 
 **Outputs**:
 
@@ -105,7 +107,7 @@ copies of every `manuscript/*.md` under `output/manuscript/`.
 | `manuscript_variables.json` | `output/data/` | `{ "TOKEN": "value" }` mapping for all eleven tokens |
 | `*.md` (substituted) | `output/manuscript/` | Manuscript section files with `{{TOKEN}}` resolved |
 
-**Critical**: every `{{TOKEN}}` referenced in `manuscript/*.md` must resolve
+**Critical**: every `{{TOKEN}}` referenced in `docs/manuscript/*.md` must resolve
 to a non-empty string before Phase 3. Unresolved tokens render literally.
 
 ### Phase 3 — Render PDF
@@ -115,11 +117,11 @@ to a non-empty string before Phase 3. Unresolved tokens render literally.
 
 **Command**:
 ```bash
-uv run python scripts/pipeline/stage_03_render.py --project template_prose_project
+uv run python scripts/pipeline/stage_03_render.py --project working/template_prose_project
 ```
 
-**Inputs**: `output/manuscript/*.md` (substituted) + `manuscript/config.yaml`
-+ `manuscript/preamble.md` + `manuscript/references.bib`.
+**Inputs**: `output/manuscript/*.md` (substituted) + `docs/manuscript/config.yaml`
++ `docs/manuscript/preamble.md` + `docs/manuscript/references.bib`.
 
 **Infrastructure modules involved**:
 
@@ -128,16 +130,16 @@ uv run python scripts/pipeline/stage_03_render.py --project template_prose_proje
 | `infrastructure/rendering/pdf_renderer.py` | Orchestrates Pandoc → XeLaTeX pipeline |
 | `infrastructure/rendering/_pdf_latex_helpers.py` | LaTeX package validation and preamble injection |
 | `infrastructure/rendering/manuscript_discovery.py` | Discovers and orders manuscript section files |
-| `infrastructure/core/config/loader.py` | Reads `manuscript/config.yaml` for title, authors, metadata |
+| `infrastructure/core/config/loader.py` | Reads `docs/manuscript/config.yaml` for title, authors, metadata |
 
 **Outputs**:
-- `projects/templates/template_prose_project/output/pdf/template_prose_project_combined.pdf`
+- `projects/working/template_prose_project/output/pdf/template_prose_project_combined.pdf`
   — final publication PDF (working copy).
-- `projects/templates/template_prose_project/output/pdf/_combined_manuscript.*` — LaTeX intermediates
+- `projects/working/template_prose_project/output/pdf/_combined_manuscript.*` — LaTeX intermediates
   (`.tex`, `.aux`, `.log`).
-- `projects/templates/template_prose_project/output/slides/` — per-section Beamer slide
+- `projects/working/template_prose_project/output/slides/` — per-section Beamer slide
   PDFs.
-- `projects/templates/template_prose_project/output/web/` — HTML versions of each section.
+- `projects/working/template_prose_project/output/web/` — HTML versions of each section.
 
 ### Phase 4 — Copy Final Deliverables
 
@@ -145,7 +147,7 @@ uv run python scripts/pipeline/stage_03_render.py --project template_prose_proje
 
 **Command**:
 ```bash
-uv run python scripts/pipeline/stage_05_copy.py --project template_prose_project
+uv run python scripts/pipeline/stage_05_copy.py --project working/template_prose_project
 ```
 
 **Output**: Final PDF and figures copied to
@@ -154,7 +156,7 @@ upload and by the multi-project executive report).
 
 ## `config.yaml` Controls
 
-Every knob lives in `projects/templates/template_prose_project/manuscript/config.yaml`:
+Every knob lives in `projects/working/template_prose_project/docs/manuscript/config.yaml`:
 
 | YAML Key | Controls | Consumed by |
 |---|---|---|
@@ -187,32 +189,32 @@ in `src/manuscript_variables.py::ManuscriptVariables`.
 **Fix**:
 ```bash
 # Confirm the JSON exists
-ls projects/templates/template_prose_project/output/data/manuscript_variables.json
+ls projects/working/template_prose_project/output/data/manuscript_variables.json
 
 # Re-run Phase 2
-uv run python projects/templates/template_prose_project/scripts/z_generate_manuscript_variables.py
+uv run python projects/working/template_prose_project/scripts/z_generate_manuscript_variables.py
 
 # Detect remaining unresolved tokens
-grep -r "{{" projects/templates/template_prose_project/output/manuscript/ | grep -v ".json"
+grep -r "{{" projects/working/template_prose_project/output/manuscript/ | grep -v ".json"
 ```
 
 ### BibTeX citation error / PDF fails to compile
 
 **Symptom**: XeLaTeX exits with a BibTeX error or undefined citation key.
 
-**Cause**: Either a malformed entry in `manuscript/references.bib`
+**Cause**: Either a malformed entry in `docs/manuscript/references.bib`
 (unclosed braces, duplicate keys, missing required fields) or a `[@key]`
 reference in the prose with no matching entry.
 
 **Fix**: Run the bibliography validator first:
 ```bash
 uv run python -m infrastructure.reference.citation.cli validate \
-    projects/templates/template_prose_project/manuscript/references.bib --strict
+    projects/working/template_prose_project/docs/manuscript/references.bib --strict
 ```
 
 If `bibliography_consistency` failed in Phase 1, `output/checks.json`
 will list missing keys under `details.missing` — add them to
-`manuscript/references.bib` (this project never auto-populates the bib;
+`docs/manuscript/references.bib` (this project never auto-populates the bib;
 manual curation is intentional).
 
 ### FKGL out of band
@@ -225,9 +227,9 @@ manual curation is intentional).
 **Fix**:
 1. **Too high (dense prose)**: shorten sentences, replace polysyllabic
    words with simpler synonyms, split paragraphs.
-2. **Too low (over-simple)**: verify `manuscript/` contains the actual
+2. **Too low (over-simple)**: verify `docs/manuscript/` contains the actual
    prose, not placeholder text.
-3. Or widen the band in `manuscript/config.yaml`.
+3. Or widen the band in `docs/manuscript/config.yaml`.
 
 See [`troubleshooting.md`](troubleshooting.md) for the diagnostic flowchart.
 
@@ -241,7 +243,7 @@ that `src/figures.py` sets at import time.
 **Fix**:
 ```bash
 unset MPLBACKEND
-uv run python projects/templates/template_prose_project/scripts/y_generate_prose_figures.py
+uv run python projects/working/template_prose_project/scripts/y_generate_prose_figures.py
 ```
 
 `tests/conftest.py` pins `MPLBACKEND=Agg` for the test suite; the figure

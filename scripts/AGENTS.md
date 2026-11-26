@@ -67,5 +67,5 @@ sorts at the right point. No edits to `pipeline.yaml` are required.
 
 * [`README.md`](README.md) — quick reference.
 * [`../src/AGENTS.md`](../src/AGENTS.md) — the modules these scripts orchestrate.
-* [`docs/rules/folder_structure.md`](../../../../docs/rules/folder_structure.md) —
+* [`docs/rules/folder_structure.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/rules/folder_structure.md) —
   the project-wide thin-orchestrator rule.

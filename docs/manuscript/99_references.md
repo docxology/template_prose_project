@@ -1,0 +1,12 @@
+# References {#sec:references}
+
+Bibliography lives in `docs/manuscript/references.bib` and is read by Pandoc during PDF render. The build pipeline invokes Pandoc with `--natbib`, so every `[@key]` citation in the manuscript is rewritten to the appropriate `\cite{}`/`\citep{}`/`\citet{}` LaTeX command and resolved against the bib file.
+
+This project does not auto-generate the bibliography — it **validates** that every `[@key]` cited in the prose has a matching entry, via the project's own `src.prose_facade.parse_bib_keys` helper (a lightweight BibTeX-key regex that skips `@comment` blocks). The check policy is configured under `bibliography:` in `config.yaml`.
+
+To validate that `references.bib` is syntactically clean:
+
+```bash
+uv run python -m infrastructure.reference.citation.cli validate \
+    projects/working/template_prose_project/docs/manuscript/references.bib --strict
+```

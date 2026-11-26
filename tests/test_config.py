@@ -378,15 +378,15 @@ def test_preset_null_treated_as_absent(tmp_path: Path):
 
 def test_bundled_config_declares_lenient_preset():
     """The live bundled config names its profile explicitly."""
-    config = load_project_config(PROJECT_ROOT / "manuscript" / "config.yaml")
+    config = load_project_config(PROJECT_ROOT / "docs" / "manuscript" / "config.yaml")
     assert config.prose.preset == "lenient"
 
 
 def test_example_config_parses_and_is_stricter_than_bundled():
     """config.yaml.example must parse under the strict loader and stay stricter
     than the bundled exemplar config (the forkable starting point)."""
-    live = load_project_config(PROJECT_ROOT / "manuscript" / "config.yaml")
-    example = load_project_config(PROJECT_ROOT / "manuscript" / "config.yaml.example")
+    live = load_project_config(PROJECT_ROOT / "docs" / "manuscript" / "config.yaml")
+    example = load_project_config(PROJECT_ROOT / "docs" / "manuscript" / "config.yaml.example")
     assert example.prose.preset == "strict"
     assert example.prose.target_grade_level_min > live.prose.target_grade_level_min
     assert example.prose.target_grade_level_max < live.prose.target_grade_level_max
