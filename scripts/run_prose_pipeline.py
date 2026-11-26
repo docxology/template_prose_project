@@ -21,6 +21,7 @@ sys.path.insert(0, str(_project_root))
 sys.path.insert(0, str(_project_root / "src"))
 sys.path.insert(0, str(_repo_root))
 
+from infrastructure.core.project_paths import resolve_source_manuscript_dir  # noqa: E402
 from infrastructure.core.logging.utils import get_logger
 from infrastructure.prose import analyze_manuscript
 
@@ -36,8 +37,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
         "--config",
-        default=str(_project_root / "manuscript" / "config.yaml"),
-        help="Path to manuscript/config.yaml",
+        default=None,
+        help="Override the project manuscript configuration",
     )
     parser.add_argument(
         "--project-root",
@@ -52,7 +53,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     project_root = Path(args.project_root).resolve()
-    config = load_project_config(args.config)
+    config_path = args.config or (resolve_source_manuscript_dir(project_root) / "config.yaml")
+    config = load_project_config(config_path)
 
     logger.info("Running prose pipeline for: %s", config.title)
     manuscript_dir = (project_root / config.manuscript_dir).resolve()

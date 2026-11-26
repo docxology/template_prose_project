@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-MANUSCRIPT = PROJECT_ROOT / "manuscript"
+MANUSCRIPT = PROJECT_ROOT / "docs" / "manuscript"
 
 SECTION_FILES = sorted(
     p for p in MANUSCRIPT.glob("*.md") if p.name not in {"preamble.md", "AGENTS.md", "README.md", "SYNTAX.md"}

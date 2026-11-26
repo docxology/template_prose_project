@@ -1,4 +1,4 @@
-# `template_prose_project/manuscript/`
+# `template_prose_project/docs/manuscript/`
 
 Hand-curated manuscript and run policy for the prose-review exemplar.
 
@@ -20,9 +20,12 @@ Hand-curated manuscript and run policy for the prose-review exemplar.
 
 ## Editing
 
+Register this checkout with the [pinned runner](../quickstart.md) before running
+the review or rendering the manuscript.
+
 ```bash
 # After editing manuscript files, re-run the review:
-uv run python projects/templates/template_prose_project/scripts/run_prose_pipeline.py
+uv run python projects/working/template_prose_project/scripts/run_prose_pipeline.py
 ```
 
 The pipeline:
@@ -39,5 +42,5 @@ See [AGENTS.md](AGENTS.md) for the substitution markers and editing checklist, a
 ## See also
 
 - [`SYNTAX.md`](SYNTAX.md) — Pandoc citation/cross-reference syntax for this manuscript.
-- [`../../../docs/guides/manuscript-semantics.md`](../../../../docs/guides/manuscript-semantics.md) — Repository-wide manuscript semantics.
-- [`../../../AGENTS.md`](../../../AGENTS.md#permanent-canonical-exemplars) — public exemplar roster.
+- [`../../../docs/guides/manuscript-semantics.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/guides/manuscript-semantics.md) — Repository-wide manuscript semantics.
+- [`../../../AGENTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/AGENTS.md#permanent-canonical-exemplars) — public exemplar roster.

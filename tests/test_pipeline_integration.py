@@ -18,9 +18,9 @@ def test_bundled_manuscript_runs(tmp_path: Path):
     """Copy the bundled manuscript into an isolated dir and run the full pipeline."""
     isolated = tmp_path / "iso"
     isolated.mkdir()
-    shutil.copytree(PROJECT_ROOT / "manuscript", isolated / "manuscript")
+    shutil.copytree(PROJECT_ROOT / "docs" / "manuscript", isolated / "docs" / "manuscript")
 
-    config = load_project_config(isolated / "manuscript" / "config.yaml")
+    config = load_project_config(isolated / "docs" / "manuscript" / "config.yaml")
     artifacts = run_prose_pipeline_with_analysis(config, project_root=isolated)
 
     assert artifacts.manuscript_report.total_words > 100

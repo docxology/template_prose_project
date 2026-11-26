@@ -65,7 +65,7 @@ zero-mock checklist.
 
 The 90% gate is the floor enforced by the root pipeline. Live measured
 coverage for this exemplar is in
-[`docs/_generated/COUNTS.md`](../../../../docs/_generated/COUNTS.md).
+[`docs/_generated/COUNTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md).
 The buffer protects against incidental coverage drops during refactoring; do
 not consume it on purpose.
 
@@ -86,12 +86,12 @@ Yes, via `tests/test_scripts.py`, which invokes
 `scripts/y_generate_prose_figures.py` through `subprocess.run`. The tests
 assert exit codes and on-disk artefacts, not call counts. The integration
 test `tests/test_pipeline_integration.py` additionally drives
-`run_prose_pipeline` directly against the bundled `manuscript/`.
+`run_prose_pipeline` directly against the bundled `docs/manuscript/`.
 
 ### How do I run a single test?
 
 ```bash
-uv run pytest projects/templates/template_prose_project/tests/test_pipeline.py::TestRunProsePipeline -v
+uv run pytest projects/working/template_prose_project/tests/test_pipeline.py::TestRunProsePipeline -v
 ```
 
 Use the standard pytest selector syntax (`module::Class::method`).
@@ -100,9 +100,9 @@ Use the standard pytest selector syntax (`module::Class::method`).
 
 ### How do I add a new section?
 
-1. Add `manuscript/NN_section.md` with a single H1 (`# Title`) at the top.
+1. Add `docs/manuscript/NN_section.md` with a single H1 (`# Title`) at the top.
 2. The pipeline will pick it up automatically — `infrastructure.prose.read_manuscript_dir`
-   discovers every `*.md` under `manuscript/`.
+   discovers every `*.md` under `docs/manuscript/`.
 3. Verify the file passes `every_file_has_h1` and `no_skipped_heading_levels`
    by re-running `scripts/run_prose_pipeline.py`.
 4. If you want to cross-reference the section, give it a label in the H1:
@@ -113,7 +113,7 @@ See [`syntax_guide.md`](syntax_guide.md) Section 2.
 ### What `{{TOKEN}}`s are available?
 
 Eleven tokens are defined in
-`projects/templates/template_prose_project/src/manuscript_variables.py::ManuscriptVariables`.
+`projects/working/template_prose_project/src/manuscript_variables.py::ManuscriptVariables`.
 The full list with sources is documented in [`syntax_guide.md`](syntax_guide.md)
 Section 3.
 
@@ -131,7 +131,7 @@ narrative:
 - `output/figures/citation_density.png` — citations per 1000 words by section.
 
 They are surfaced in `output/review_report.md` for the editor, not embedded
-in `manuscript/*.md`. The prose project produces no scientific data of its
+in `docs/manuscript/*.md`. The prose project produces no scientific data of its
 own; therefore it publishes no figures into the manuscript body. See
 [`syntax_guide.md`](syntax_guide.md) Section 6 and
 [`architecture.md`](architecture.md) for the full justification.
@@ -146,7 +146,7 @@ appears in PDF" for the full diagnostic procedure.
 Working copy:
 
 ```
-projects/templates/template_prose_project/output/pdf/template_prose_project_combined.pdf
+projects/working/template_prose_project/output/pdf/template_prose_project_combined.pdf
 ```
 
 Promoted copy (used by CI for artifact upload):
@@ -155,7 +155,7 @@ Promoted copy (used by CI for artifact upload):
 output/template_prose_project/template_prose_project_combined.pdf
 ```
 
-The promotion step is `scripts/pipeline/stage_05_copy.py --project template_prose_project`.
+The promotion step is `scripts/pipeline/stage_05_copy.py --project working/template_prose_project`.
 
 ## Common pitfalls
 
@@ -180,7 +180,7 @@ passes a real Markdown string (or `tmp_path`-based `.md` file) through
 ```
 _pytest.pathlib.ImportPathMismatchError: ('tests.conftest', ...)
 ```
-when running `uv run pytest tests/ projects/templates/template_prose_project/tests/` together.
+when running `uv run pytest tests/ projects/working/template_prose_project/tests/` together.
 
 **Cause**: Both directories are named `tests/` and pytest's import-path
 discovery confuses them.
@@ -217,7 +217,7 @@ To add a new knob:
 ### I added a check and `output/checks.json` does not contain it
 
 Adding a check is a four-step process documented in
-`projects/templates/template_prose_project/AGENTS.md` ("Extending"):
+`projects/working/template_prose_project/AGENTS.md` ("Extending"):
 
 1. Add the field to `src/config.py::ProseAnalysisConfig`.
 2. Add a `_check_<name>` function in `src/pipeline/checks.py`.
@@ -234,4 +234,4 @@ If you skipped step 3, the check function exists but is never invoked.
 - [`output_conventions.md`](output_conventions.md) — output regeneration rules.
 - [`syntax_guide.md`](syntax_guide.md) — Pandoc syntax and token list.
 - [`testing_philosophy.md`](testing_philosophy.md) — zero-mock standard.
-- [`../manuscript/AGENTS.md`](../manuscript/AGENTS.md) — substitution-marker registry.
+- [`../manuscript/AGENTS.md`](manuscript/AGENTS.md) — substitution-marker registry.

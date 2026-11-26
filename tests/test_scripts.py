@@ -15,7 +15,7 @@ REPO_ROOT = PROJECT_ROOT.parent.parent
 def _setup_isolated(tmp_path: Path) -> Path:
     iso = tmp_path / "iso"
     iso.mkdir()
-    shutil.copytree(PROJECT_ROOT / "manuscript", iso / "manuscript")
+    shutil.copytree(PROJECT_ROOT / "docs" / "manuscript", iso / "docs" / "manuscript")
     return iso
 
 
@@ -25,8 +25,6 @@ def test_run_prose_pipeline_offline(tmp_path: Path):
         [
             sys.executable,
             str(PROJECT_ROOT / "scripts" / "run_prose_pipeline.py"),
-            "--config",
-            str(iso / "manuscript" / "config.yaml"),
             "--project-root",
             str(iso),
         ],
@@ -45,7 +43,7 @@ def test_run_prose_pipeline_strict_mode(tmp_path: Path):
     """Strict mode exits non-zero when checks fail."""
     iso = _setup_isolated(tmp_path)
     # Make the grade-level band impossibly tight.
-    cfg = iso / "manuscript" / "config.yaml"
+    cfg = iso / "docs" / "manuscript" / "config.yaml"
     cfg.write_text(
         cfg.read_text(encoding="utf-8").replace("target_grade_level_max: 18.0", "target_grade_level_max: 1.0"),
         encoding="utf-8",
@@ -106,7 +104,7 @@ def test_z_generate_manuscript_variables(tmp_path: Path):
             sys.executable,
             str(PROJECT_ROOT / "scripts" / "run_prose_pipeline.py"),
             "--config",
-            str(iso / "manuscript" / "config.yaml"),
+            str(iso / "docs" / "manuscript" / "config.yaml"),
             "--project-root",
             str(iso),
         ],

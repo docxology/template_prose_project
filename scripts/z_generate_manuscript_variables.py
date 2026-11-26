@@ -4,7 +4,7 @@
 Reads ``<project_root>/output/manuscript_report.json``, computes a
 :class:`ManuscriptVariables` record, writes it to
 ``<project_root>/output/data/manuscript_variables.json``, and writes
-token-substituted copies of every ``manuscript/*.md`` under
+token-substituted copies of every ``docs/manuscript/*.md`` under
 ``<project_root>/output/manuscript/``.
 
 Exit codes:
@@ -27,6 +27,7 @@ sys.path.insert(0, str(_DEFAULT_PROJECT_ROOT))
 sys.path.insert(0, str(_DEFAULT_PROJECT_ROOT / "src"))
 sys.path.insert(0, str(_REPO_ROOT))
 
+from infrastructure.core.project_paths import resolve_source_manuscript_dir  # noqa: E402
 from infrastructure.core.logging.utils import get_logger  # noqa: E402
 
 from src.config import load_project_config  # noqa: E402
@@ -55,7 +56,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--config",
         type=Path,
         default=None,
-        help="Override path to config.yaml (default: <project_root>/manuscript/config.yaml).",
+        help="Override path to config.yaml (default: config.yaml in the project manuscript directory).",
     )
     return parser.parse_args(argv)
 
@@ -64,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
     """CLI entry point."""
     args = _parse_args(argv)
     project_root: Path = args.project_root.resolve()
-    config_path: Path = (args.config or (project_root / "manuscript" / "config.yaml")).resolve()
+    config_path: Path = (args.config or (resolve_source_manuscript_dir(project_root) / "config.yaml")).resolve()
 
     report_path = project_root / "output" / "manuscript_report.json"
     if not report_path.exists():

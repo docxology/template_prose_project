@@ -1,4 +1,4 @@
-# `template_prose_project/manuscript/`
+# `template_prose_project/docs/manuscript/`
 
 Manuscript directory — single source of truth for run policy and the
 prose itself.
@@ -7,7 +7,7 @@ prose itself.
 
 ```mermaid
 flowchart TB
-    M[template_prose_project/manuscript/]
+    M[template_prose_project/docs/manuscript/]
     M --> CFG[config.yaml<br/>single source of truth · all knobs]
     M --> PRE[preamble.md<br/>LaTeX preamble for Pandoc]
     M --> S00[00_abstract.md<br/>Run-snapshot variables]
@@ -57,8 +57,8 @@ npx --yes puppeteer browsers install chrome-headless-shell
 ```
 
 Full explanation and the version-pin variant:
-[`../docs/rendering_pipeline.md`](../docs/rendering_pipeline.md#prerequisite-mermaid-diagrams-need-chrome-headless-shell)
-and [`../docs/troubleshooting.md`](../docs/troubleshooting.md#pdf-rendering-stage-fails-mmdc-could-not-find-chrome).
+[`../docs/rendering_pipeline.md`](../rendering_pipeline.md#prerequisite-mermaid-diagrams-need-chrome-headless-shell)
+and [`../docs/troubleshooting.md`](../troubleshooting.md#pdf-rendering-stage-fails-mmdc-could-not-find-chrome).
 If you add a ```mermaid``` block to any section, this prerequisite applies.
 
 ## Substitution markers
@@ -71,7 +71,7 @@ which writes resolved copies to `output/manuscript/` and excludes
 documentation-only files (`AGENTS.md`, `README.md`, `SYNTAX.md`) from
 the output tree so their literal `{{TOKEN}}` examples are never substituted.
 Current markers (defined in
-[`src/manuscript_variables.py`](../src/manuscript_variables.py)):
+[`src/manuscript_variables.py`](../../src/manuscript_variables.py)):
 
 | Marker | Source |
 |---|---|
@@ -100,18 +100,18 @@ Current markers (defined in
   `{{LONGEST_SECTION_WORDS}}` / `{{SHORTEST_SECTION_WORDS}}` /
   `{{FILES_ANALYSED}}` / `{{TOTAL_WORDS}}` tokens reflect the new section
   set. Skipping this step leaves stale numbers in the rendered PDF and
-  the regression test silently passes if `manuscript/` is empty.**
+  the regression test silently passes if `docs/manuscript/` is empty.**
 
 ## See also
 
 * [`SYNTAX.md`](SYNTAX.md) — Pandoc citation/cross-reference syntax for this manuscript.
-* [`../../../docs/guides/manuscript-semantics.md`](../../../../docs/guides/manuscript-semantics.md) — Repository-wide canonical manuscript semantics (citations, equations, figures, tables, sections, tokens, preamble).
+* [`../../../docs/guides/manuscript-semantics.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/guides/manuscript-semantics.md) — Repository-wide canonical manuscript semantics (citations, equations, figures, tables, sections, tokens, preamble).
 * [`README.md`](README.md) — quick reference.
-* [`../docs/output_conventions.md`](../docs/output_conventions.md) —
+* [`../docs/output_conventions.md`](../output_conventions.md) —
   what lands in `output/`.
-* [`../docs/troubleshooting.md`](../docs/troubleshooting.md) — when a
+* [`../docs/troubleshooting.md`](../troubleshooting.md) — when a
   check fails.
-* [`../../../infrastructure/prose/SKILL.md`](../../../../infrastructure/prose/SKILL.md) —
+* [`../../../infrastructure/prose/SKILL.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/infrastructure/prose/SKILL.md) —
   underlying analysis API.
-* [`../../../infrastructure/reference/SKILL.md`](../../../../infrastructure/reference/SKILL.md) —
+* [`../../../infrastructure/reference/SKILL.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/infrastructure/reference/SKILL.md) —
   bibliography validation API.

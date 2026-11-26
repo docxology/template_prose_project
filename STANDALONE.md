@@ -10,78 +10,11 @@
 - Stable concept DOI: [10.5281/zenodo.20417104](https://doi.org/10.5281/zenodo.20417104)
 - Latest deposited version DOI: [10.5281/zenodo.20932047](https://zenodo.org/records/20932047)
 - Additional declared locations: [github_pages](https://docxology.github.io/template_prose_project/), [huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_prose_project), [ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmXXUgas1amP7Pd9rRoTdJQiNUzBqKQ4r3Jf85aaGEnjz4), [netlify](https://6a44425bbd23b314b04b0154--tranquil-kleicha-0c9203.netlify.app), [osf](https://osf.io/sh2r3/), [pypi](https://test.pypi.org/project/template-prose-project/0.4.2/), [software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_prose_project)
-- Metadata source: [`manuscript/config.yaml`](manuscript/config.yaml); citation sidecars live at the project root.
+- Metadata source: [`docs/manuscript/config.yaml`](docs/manuscript/config.yaml); citation sidecars live at the project root.
 
 Additional locations are config-declared publication evidence; the central index records whether external GitHub and Zenodo checks were refreshed.
 
 <!-- END:PUBLICATION_INDEX -->
 
-## Purpose
-
-`template_prose_project` is the manuscript-focused prose-review exemplar:
-readability checks, bibliography diagnostics, report generation, figures, and
-manuscript-variable injection.
-
-## Copy This When
-
-Use it when the main research object is a prose corpus or review manuscript and
-the fork should preserve auditable editorial checks.
-
-## Clean Copy Command
-
-From the template repository root:
-
-```bash
-uv run python scripts/audit/copy_exemplar.py \
-  --source templates/template_prose_project \
-  --dest projects/working/my_prose_project \
-  --new-name my_prose_project
-```
-
-Fallback when the helper is unavailable:
-
-```bash
-rsync -a \
-  --exclude '.venv/' --exclude '.pytest_cache/' --exclude '.ruff_cache/' \
-  --exclude 'htmlcov/' --exclude 'output/' --exclude 'rendered/' --exclude '*.egg-info/' \
-  projects/templates/template_prose_project/ projects/working/my_prose_project/
-```
-
-## Required Post-Fork Edits
-
-- Update `manuscript/config.yaml`, `domain_profile.yaml`, `experiment_plan.yaml`,
-  `CITATION.cff`, `.zenodo.json`, `codemeta.json`, and `pyproject.toml`.
-- Replace manuscript chapters, bibliography, review thresholds, and any
-  generated-report claims.
-- Regenerate prose reports, figures, and manuscript variables after editing the
-  corpus.
-
-## Validation Commands
-
-Run from the template repository root after copying into `projects/working/`:
-
-```bash
-uv run pytest projects/working/my_prose_project/tests/ \
-  --cov=projects/working/my_prose_project/src --cov-fail-under=90
-uv run python projects/working/my_prose_project/scripts/run_prose_pipeline.py
-uv run python projects/working/my_prose_project/scripts/z_generate_manuscript_variables.py
-```
-
-For the public exemplar:
-
-```bash
-uv run pytest projects/templates/template_prose_project/tests/ \
-  --cov=projects/templates/template_prose_project/src --cov-fail-under=90
-```
-
-## Intentional Non-Standalone Dependencies
-
-This exemplar intentionally uses shared `infrastructure.prose` and manuscript
-injection helpers. It is forkable as a project in a full template checkout. A
-copy outside that checkout must vendor or replace those prose-analysis adapters.
-
-## What Not To Claim
-
-Do not claim source completeness, readability outcomes, or bibliography health
-from a renamed fork until the fork has regenerated its prose report and
-manuscript variables against its own corpus.
+See the [standalone fork guide](docs/standalone.md) for the workflow and the
+[quickstart](docs/quickstart.md) to build this checkout.

@@ -188,7 +188,7 @@ def test_all_manuscript_tokens_are_generated():
     produced = {k.upper() for k in asdict(vars_).keys()}
 
     project_root = Path(__file__).resolve().parent.parent
-    manuscript_dir = project_root / "manuscript"
+    manuscript_dir = project_root / "docs" / "manuscript"
     # Hard-fail if manuscript/ has been removed: silently skipping the
     # cross-reference test lets a forker delete every section without any
     # regression signal. The whole point of this test is to gate

@@ -44,7 +44,7 @@ metadata:
   language: "en"
 
 # Path to the manuscript directory, relative to project root.
-manuscript_dir: "manuscript"
+manuscript_dir: "docs/manuscript"
 
 # ---------------------------------------------------------------------------
 # Render format toggles. Five booleans gate the corresponding renderer in
@@ -105,7 +105,7 @@ prose:
 # Bibliography cross-check.
 # ---------------------------------------------------------------------------
 bibliography:
-  references_path: "manuscript/references.bib"
+  references_path: "docs/manuscript/references.bib"
   fail_on_missing: true   # cited [@key] not in bib → fail
   fail_on_unused: false   # bib entry never cited → warn only
 

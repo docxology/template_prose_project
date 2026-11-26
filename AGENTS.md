@@ -75,7 +75,7 @@ These files are validation inputs only and do not run autonomous review agents.
 
 | Command | Behaviour |
 |---|---|
-| `python scripts/run_prose_pipeline.py` | Default config; reads `manuscript/`, writes everything. |
+| `python scripts/run_prose_pipeline.py` | Default config; reads `docs/manuscript/`, writes everything. |
 | `… --strict` | Exit non-zero if any configured check fails. |
 | `… --config other.yaml` | Use an alternative config file. |
 | `… --project-root path` | Run against an isolated project root. |
@@ -109,11 +109,11 @@ To add a new figure:
 
 1. Add a `plot_<name>` function in `src/figures.py`.
 2. Append it to `generate_all_figures`.
-3. Reference the output PNG in `manuscript/03_results.md` if desired.
+3. Reference the output PNG in `docs/manuscript/03_results.md` if desired.
 
 To target a different manuscript:
 
-1. Edit `manuscript_dir` in `manuscript/config.yaml`.
+1. Edit `manuscript_dir` in `docs/manuscript/config.yaml`.
 2. Adjust `prose.target_grade_level_*` and `bibliography.fail_on_*` to
    match the target audience.
 3. Re-run the pipeline.

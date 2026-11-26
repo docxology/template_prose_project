@@ -89,7 +89,7 @@ flowchart LR
 - [ ] Added a substitution variable → add field to
   `ManuscriptVariables`, populate in `compute_variables`, add a test in
   `tests/test_manuscript_variables.py`, reference the new
-  `{{UPPER_NAME}}` marker in `manuscript/00_abstract.md`.
+  `{{UPPER_NAME}}` marker in `docs/manuscript/00_abstract.md`.
 
 ## See also
 

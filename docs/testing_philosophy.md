@@ -36,7 +36,7 @@ Files (`projects/templates/template_prose_project/tests/`):
   `TestCitationExtractionViaPipeline`, `TestProseRunArtifacts`,
   `TestCheckResult`, `TestLongSentenceThresholdWired`,
   `TestNegativeControls`).
-- `test_pipeline_integration.py` — runs the bundled `manuscript/` end-to-end
+- `test_pipeline_integration.py` — runs the bundled `docs/manuscript/` end-to-end
   against `run_prose_pipeline` (1 test).
 - `test_prose_facade.py` — covers `src/prose_facade.py` report Protocols,
   `render_outline`, and `parse_bib_keys` (16 tests).
@@ -58,7 +58,7 @@ These per-file counts are a point-in-time snapshot (last verified against
 `docs/_generated/COUNTS.md` or a fresh `--collect-only` run, not this prose.
 
 **Live test count + achieved coverage:** see
-[`docs/_generated/COUNTS.md`](../../../../docs/_generated/COUNTS.md)
+[`docs/_generated/COUNTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md)
 (or run `uv run pytest projects/templates/template_prose_project/tests/ --collect-only -q | tail -1`).
 
 Conftest: `projects/templates/template_prose_project/tests/conftest.py` (sets
@@ -69,7 +69,7 @@ Configuration: `projects/templates/template_prose_project/pyproject.toml`
 ## Coverage
 
 Measured line and branch coverage for `projects/templates/template_prose_project/src/` lives in
-[`docs/_generated/COUNTS.md`](../../../../docs/_generated/COUNTS.md)
+[`docs/_generated/COUNTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md)
 (exemplar table). Re-measure locally:
 
 ```bash
@@ -105,7 +105,7 @@ Every test uses real artefacts:
 ## Integration Test
 
 `tests/test_pipeline_integration.py::test_bundled_manuscript_runs` is the
-end-to-end fixture: it copies the project's own `manuscript/` directory
+end-to-end fixture: it copies the project's own `docs/manuscript/` directory
 into a temporary location, runs `run_prose_pipeline` against it, and
 verifies that `manuscript_report.json`, `checks.json`, `review_report.md`,
 and `run_summary.json` all land in the expected locations. The assertion

@@ -46,4 +46,4 @@ multi-page tables will likely need everything below.
 
 > **Heavy math fork.** If you add gradient-descent equations or other Unicode-heavy
 > notation, port a JuliaMono / `unicode-math` font block into this preamble.
-> See [`manuscript/AGENTS.md`](AGENTS.md) for operator guidance.
+> See [`docs/manuscript/AGENTS.md`](AGENTS.md) for operator guidance.

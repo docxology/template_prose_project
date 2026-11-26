@@ -1,4 +1,4 @@
-"""Typed access to ``manuscript/config.yaml`` for the prose project.
+"""Typed access to ``docs/manuscript/config.yaml`` for the prose project.
 
 The loader is **strict**: unknown top-level keys, unknown nested keys
 under ``prose``/``bibliography``/``report``, and out-of-band invariants
@@ -55,7 +55,7 @@ _KNOWN_PROSE_KEYS: frozenset[str] = frozenset(
 # any knob the YAML does not set explicitly; explicit keys always win.
 # "lenient" is the bundled exemplar's permissive band (its own abstract must
 # pass its own gate); "strict" is the forkable starting point also shown in
-# manuscript/config.yaml.example.
+# docs/manuscript/config.yaml.example.
 PROSE_PRESETS: dict[str, dict[str, float | int | bool]] = {
     "lenient": {
         "target_grade_level_min": 10.0,
