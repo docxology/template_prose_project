@@ -82,9 +82,8 @@ These files are validation inputs only and do not run autonomous review agents.
 
 ## Testing
 
-```bash
-uv run pytest projects/templates/template_prose_project/tests/ -v
-```
+Use the [pinned quick start](docs/quickstart.md#check-sources-and-generate-analysis)
+to register this checkout and run its tests and coverage check.
 
 All tests run offline. Real prose inputs, real BibTeX files, real
 `tmp_path` directories, real subprocess invocation of the scripts. No

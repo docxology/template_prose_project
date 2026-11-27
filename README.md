@@ -189,8 +189,8 @@ experiments, mutate prompts, or run autonomous review agents.
 
 - Forward backlog: [`TODO.md`](docs/TODO.md).
 - Copy-and-customize config: [`docs/manuscript/config.yaml.example`](docs/manuscript/config.yaml.example).
-- Project validation: `uv run pytest projects/templates/template_prose_project/tests/ --cov=projects/templates/template_prose_project/src --cov-fail-under=90`.
-- Repo drift validation: `uv run python scripts/audit/check_template_drift.py --strict`.
+- Project validation: run the tests and coverage check from the [pinned quick start](docs/quickstart.md#check-sources-and-generate-analysis).
+- Upstream drift validation: from the [Template repository](https://github.com/docxology/template), run `uv run python scripts/audit/check_template_drift.py --strict`.
 
 <!-- foam-orphan-nav:start (hand-maintained: links sub-docs so they are reachable; no generator refreshes or validates this block) -->
 
