@@ -34,11 +34,14 @@ success with slides-but-no-combined-PDF is the signature of this missing
 dependency. See
 [troubleshooting.md](troubleshooting.md#pdf-rendering-stage-fails-mmdc-could-not-find-chrome).
 
-Use the [pinned quickstart](quickstart.md) to register this checkout and prepare the environment before running these commands.
+The authored manuscript and project scripts live in this checkout. Run the
+phase commands below from the root of the pinned `docxology/template` checkout
+with this project registered at `projects/working/template_prose_project/`.
+Follow the [pinned quickstart](quickstart.md) to set up the runner.
 
 ## The Self-Referential Flow
 
-The pipeline has four phases. Each phase must complete before the next
+The pipeline has five phases. Each phase must complete before the next
 begins.
 
 ### Phase 1 — Run the Prose Pipeline
@@ -110,10 +113,10 @@ copies of every `docs/manuscript/*.md` under `output/manuscript/`.
 **Critical**: every `{{TOKEN}}` referenced in `docs/manuscript/*.md` must resolve
 to a non-empty string before Phase 3. Unresolved tokens render literally.
 
-### Phase 3 — Render PDF
+### Phase 3 — Render the manuscript
 
-**Script**: `scripts/pipeline/stage_03_render.py` (at repository root, **not** inside
-`projects/`).
+The shared runner's `scripts/pipeline/stage_03_render.py` produces the formats
+enabled in the manuscript configuration.
 
 **Command**:
 ```bash
@@ -139,20 +142,27 @@ uv run python scripts/pipeline/stage_03_render.py --project working/template_pro
   (`.tex`, `.aux`, `.log`).
 - `projects/working/template_prose_project/output/slides/` — per-section Beamer slide
   PDFs.
-- `projects/working/template_prose_project/output/web/` — HTML versions of each section.
+- `projects/working/template_prose_project/output/web/` — the combined reader
+  and per-section HTML pages.
 
-### Phase 4 — Copy Final Deliverables
+### Phase 4 — Validate the render
 
-**Script**: `scripts/pipeline/stage_05_copy.py` (at repository root).
+```bash
+uv run python scripts/pipeline/stage_04_validate.py --project working/template_prose_project
+```
+
+Stage 04 validates the enabled formats and records `validation_report.json`
+and `rendered_provenance.json` in the project's `output/reports/` directory.
+
+### Phase 5 — Copy final deliverables
 
 **Command**:
 ```bash
 uv run python scripts/pipeline/stage_05_copy.py --project working/template_prose_project
 ```
 
-**Output**: Final PDF and figures copied to
-`output/template_prose_project/` at the repository root (used by CI artifact
-upload and by the multi-project executive report).
+Stage 05 mirrors the project deliverables into
+`output/working/template_prose_project/` at the Template checkout root.
 
 ## `config.yaml` Controls
 
