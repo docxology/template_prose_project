@@ -4,13 +4,17 @@ Real-data test suite for the prose-review pipeline. **No mocks.**
 
 ## Run
 
+Run from the Template runner root after following the
+[pinned setup](../docs/quickstart.md#set-up-the-pinned-runner). Use `$project`
+for the registered checkout.
+
 ```bash
-# Full suite; see docs/_generated/COUNTS.md for the current count
-uv run pytest projects/templates/template_prose_project/tests/ -v
+# Full suite
+uv run --no-sync pytest "$project/tests" -v
 
 # Coverage gate
-uv run pytest projects/templates/template_prose_project/tests/ \
-    --cov=projects/templates/template_prose_project/src \
+uv run --no-sync pytest "$project/tests" \
+    --cov="$project/src" \
     --cov-fail-under=90
 ```
 
