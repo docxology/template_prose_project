@@ -38,21 +38,26 @@ flowchart TB
   the project's own `output/` directory.
 * **Bundled manuscript is the integration fixture.** `test_pipeline_integration.py`
   copies `docs/manuscript/` to a temp dir and runs the whole pipeline against it.
-* **Coverage gate: 90%.** Measured coverage → [`docs/_generated/COUNTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md); reductions should be justified in the PR.
+* **Coverage gate: 90%.** Measure the registered checkout with the coverage
+  command below. Justify coverage reductions in the PR.
 
 ## Running
 
+Run from the Template runner root after following the
+[pinned setup](../docs/quickstart.md#set-up-the-pinned-runner). Use `$project`
+for the registered checkout.
+
 ```bash
 # Full suite
-uv run pytest projects/templates/template_prose_project/tests/ -v
+uv run --no-sync pytest "$project/tests" -v
 
 # With coverage gate
-uv run pytest projects/templates/template_prose_project/tests/ \
-    --cov=projects/templates/template_prose_project/src \
+uv run --no-sync pytest "$project/tests" \
+    --cov="$project/src" \
     --cov-fail-under=90
 
 # A single test
-uv run pytest projects/templates/template_prose_project/tests/test_pipeline.py::TestRunProsePipeline::test_passing_run -v
+uv run --no-sync pytest "$project/tests/test_pipeline.py::TestRunProsePipeline::test_passing_run" -v
 ```
 
 ## Editing rules
