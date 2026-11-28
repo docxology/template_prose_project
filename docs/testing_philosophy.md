@@ -22,7 +22,7 @@ test the boundary directly.
 
 ## The Validation Suite
 
-Files (`projects/templates/template_prose_project/tests/`):
+Files in the standalone test suite. [Test directory](../tests/)
 
 - `test_config.py` — covers `src/config.py` typed YAML loader (23 tests).
 - `test_figures.py` — covers `src/figures.py` matplotlib renderers (6 tests).
@@ -53,31 +53,21 @@ Files (`projects/templates/template_prose_project/tests/`):
 - `test_report_schema.py` — strict `evidence_summary` schema regression
   controls (`src/pipeline/report_schema.validate_evidence_summary`).
 
-These per-file counts are a point-in-time snapshot (last verified against
-`--collect-only`); the authoritative live number is always
-`docs/_generated/COUNTS.md` or a fresh `--collect-only` run, not this prose.
+The listed counts are a snapshot. For current standalone collection, use the
+Quickstart's pytest command with `--collect-only -q` in place of the coverage
+flags. Template's generated counts describe the bundled exemplars.
+[Standalone test command](quickstart.md#check-sources-and-generate-analysis) ·
+[Bundled counts](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md)
 
-**Live test count + achieved coverage:** see
-[`docs/_generated/COUNTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md)
-(or run `uv run pytest projects/templates/template_prose_project/tests/ --collect-only -q | tail -1`).
-
-Conftest: `projects/templates/template_prose_project/tests/conftest.py` (sets
-`MPLBACKEND=Agg` at import time, adds `src/` to `sys.path`).
-Configuration: `projects/templates/template_prose_project/pyproject.toml`
-(`fail_under = 90`; the root pipeline gates at the same 90% number).
+The test configuration sets `MPLBACKEND=Agg`, adds `src/` to `sys.path`, and
+requires 90% branch coverage. [Conftest](../tests/conftest.py) ·
+[Project configuration](../pyproject.toml)
 
 ## Coverage
 
-Measured line and branch coverage for `projects/templates/template_prose_project/src/` lives in
-[`docs/_generated/COUNTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md)
-(exemplar table). Re-measure locally:
-
-```bash
-uv run pytest projects/templates/template_prose_project/tests/ \
-    --cov=projects/templates/template_prose_project/src \
-    --cov-report=term-missing \
-    --cov-fail-under=90
-```
+Re-measure coverage with the standalone test command from the pinned runner
+root. Add `--cov-report=term-missing` to see uncovered lines.
+[Coverage command](quickstart.md#check-sources-and-generate-analysis)
 
 Do not consume the buffer unnecessarily. Do not delete tests to make a
 coverage number work — fix the gap.
@@ -148,30 +138,10 @@ work behind a configuration knob and test both branches with real inputs.
 
 ## Running the Gate: Collection and Threshold, Not Just Exit Code
 
-A green exit code is **not** proof the suite ran. Two failure modes have
-bitten this stack; both are now guarded, but the rule stands:
-
-1. **Zero collected = not a pass.** `scripts/pipeline/stage_01_test.py --project
-   template_prose_project` resolves the interpreter from a per-project
-   `.venv`. A `.venv` created by `uv venv` without `uv sync` lacks
-   `pytest`, so pytest collects nothing and a naive scorer reports
-   `✓ PASSED (0/0 tests, 0.0% coverage)` with exit 0. Always confirm
-   **N collected > 0 AND coverage ≥ 90%**, never exit code alone.
-
-2. **The canonical gate is the direct command.** This is the authoritative
-   per-project quality gate and what CI enforces project-by-project:
-
-   ```bash
-   uv run pytest projects/templates/template_prose_project/tests/ \
-     --cov=projects/templates/template_prose_project/src --cov-fail-under=90
-   ```
-
-3. **Coverage resolves against the repo-root config.** The project's own
-   `pyproject.toml` `[tool.coverage]` `source`/`omit` are *project-relative*
-   and do not resolve when pytest runs from the repo root. The canonical
-   command and the aggregate runner both measure against the **repo-root**
-   `pyproject.toml` coverage config — that is the number the 90% gate
-   enforces. (The runner now hard-fails a 0-collected or below-threshold
-   run rather than scoring it green.)
+1. Confirm that pytest collected at least one test and reached 90% coverage.
+   If collection is empty, check that the pinned runner has pytest available.
+2. Run the direct command from the pinned runner root. Its `$project/tests`
+   and `--cov="$project/src"` arguments select the same registered checkout.
+   [Standalone test command](quickstart.md#check-sources-and-generate-analysis)
 
 See [`troubleshooting.md`](troubleshooting.md#tests-report-passed-but-ran-0-tests--00-coverage).
