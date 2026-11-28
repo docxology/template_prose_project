@@ -16,21 +16,21 @@ in this project.
 
 ## File Inventory
 
-| File | Purpose | Lines |
-|---|---|---|
-| [`README.md`](README.md) | Quick navigation and audience-targeted entry points | 120 |
-| [`AGENTS.md`](AGENTS.md) | This file — technical overview of `docs/` | 171 |
-| [`agent_instructions.md`](agent_instructions.md) | 7 hard rules for AI agents (read-first priority); verification checklist | 205 |
-| [`architecture.md`](architecture.md) | Two-layer compliance + data-flow sequence diagram | 80 |
-| [`style_guide.md`](style_guide.md) | 7 rules: Zero-Mock, Infrastructure Delegation, Thin Orchestrator, Show-Not-Tell, Explicit Paths, Type Hints, Error Messages | 268 |
-| [`syntax_guide.md`](syntax_guide.md) | Pandoc-crossref `[@sec:…]`, all eleven `{{TOKEN}}`s, code blocks, no-figures rationale | 209 |
-| [`testing_philosophy.md`](testing_philosophy.md) | Zero-mock standard; coverage mechanics; integration test (live counts in `docs/_generated/COUNTS.md`) | 177 |
-| [`rendering_pipeline.md`](rendering_pipeline.md) | Four-phase manuscript→PDF flow; config.yaml controls; troubleshooting | 259 |
-| [`output_conventions.md`](output_conventions.md) | Producer/consumer table for every artefact in `output/` | 66 |
-| [`quickstart.md`](quickstart.md) | 5-step first-run walkthrough | 81 |
-| [`troubleshooting.md`](troubleshooting.md) | Diagnostic flowchart for common failures | 191 |
-| [`faq.md`](faq.md) | Architecture, testing, manuscript, common pitfalls | 237 |
-| [`forking_guide.md`](forking_guide.md) | 5-minute walkthrough for copying the exemplar into a new project; required-vs-aesthetic map | 143 |
+| File | Purpose |
+|---|---|
+| [`README.md`](README.md) | Quick navigation and audience-targeted entry points |
+| [`AGENTS.md`](AGENTS.md) | This file — technical overview of `docs/` |
+| [`agent_instructions.md`](agent_instructions.md) | 7 hard rules for AI agents (read-first priority); verification checklist |
+| [`architecture.md`](architecture.md) | Two-layer compliance + data-flow sequence diagram |
+| [`style_guide.md`](style_guide.md) | 7 rules: Zero-Mock, Infrastructure Delegation, Thin Orchestrator, Show-Not-Tell, Explicit Paths, Type Hints, Error Messages |
+| [`syntax_guide.md`](syntax_guide.md) | Pandoc-crossref `[@sec:…]`, all eleven `{{TOKEN}}`s, code blocks, no-figures rationale |
+| [`testing_philosophy.md`](testing_philosophy.md) | Zero-mock standard, standalone coverage, and integration test |
+| [`rendering_pipeline.md`](rendering_pipeline.md) | Four-phase manuscript→PDF flow; config.yaml controls; troubleshooting |
+| [`output_conventions.md`](output_conventions.md) | Producer/consumer table for every artefact in `output/` |
+| [`quickstart.md`](quickstart.md) | Pinned runner setup and first build |
+| [`troubleshooting.md`](troubleshooting.md) | Diagnostic flowchart for common failures |
+| [`faq.md`](faq.md) | Architecture, testing, manuscript, common pitfalls |
+| [`forking_guide.md`](forking_guide.md) | 5-minute walkthrough for copying the exemplar into a new project; required-vs-aesthetic map |
 
 ## Key Conventions
 
@@ -93,28 +93,10 @@ assumes:
 
 ## Verification Commands
 
-These three commands verify the most critical constraints. Run all three
-before submitting any change:
-
-```bash
-# 1. Test suite passes + coverage ≥ 90%
-uv run pytest projects/templates/template_prose_project/tests/ \
-    --cov=projects/templates/template_prose_project/src \
-    --cov-fail-under=90 -q
-
-# 2. No mocks in tests/
-grep -r "unittest.mock\|MagicMock\|@patch\|create_autospec" \
-    projects/templates/template_prose_project/tests/ || echo "Clean"
-
-# 3. No infrastructure analysis calls outside the scripts seam
-grep -nE "analyze_manuscript|write_report|parse_bibfile" \
-    projects/templates/template_prose_project/src/figures.py \
-    projects/templates/template_prose_project/src/report.py \
-    projects/templates/template_prose_project/src/manuscript_variables.py \
-    projects/templates/template_prose_project/src/config.py \
-    projects/templates/template_prose_project/src/prose_facade.py \
-    || echo "Clean"
-```
+Follow the submission checklist from the pinned runner with this checkout
+registered as a working project.
+[Runner setup](quickstart.md#set-up-the-pinned-runner) ·
+[Verification checklist](agent_instructions.md#verification-checklist)
 
 ## REQUIRED vs AESTHETIC
 
@@ -147,7 +129,7 @@ viable project.
 | `docs/manuscript/config.yaml.example` | AESTHETIC | Documentation; forkers copy → `config.yaml` |
 | `docs/manuscript/AGENTS.md` | AESTHETIC | Agent guide; pipeline never reads it (and the substitution pass deliberately skips it) |
 | `docs/*.md` | AESTHETIC | Agent + human documentation; no gate parses these |
-| `docs/style_guide.md`, `docs/agent_instructions.md`, etc. | AESTHETIC (load-bearing for *agents*, not pipelines) | Drift detected only by audits; aspire to convert to a gate (see TIER L proposal `scripts/audit/check_template_drift.py`) |
+| `docs/style_guide.md`, `docs/agent_instructions.md`, etc. | AESTHETIC (load-bearing for *agents*, not pipelines) | Manual review and offline link checks in the [quickstart](quickstart.md#render-and-validate) |
 | `src/STYLE.md`, `tests/PATTERNS.md`, `scripts/CONVENTIONS.md` | AESTHETIC | Sibling-parity files; no automated enforcement |
 | `src/AGENTS.md`, `tests/AGENTS.md`, `scripts/AGENTS.md` | AESTHETIC | Per-subdir agent guides |
 | `pyproject.toml` | REQUIRED | Coverage gate config, pytest options, dependency declarations |

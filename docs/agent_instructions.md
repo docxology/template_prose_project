@@ -39,22 +39,14 @@ The test suite covers `tests/test_config.py`, `tests/test_figures.py`,
 `tests/test_report.py`, `tests/test_scripts.py`,
 `tests/test_claim_ledger.py`, `tests/test_llm_review.py`,
 `tests/test_manuscript_structure.py`, and `tests/test_report_schema.py`.
-Live test count + achieved coverage are tracked in
-[`docs/_generated/COUNTS.md`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md) —
-do not hardcode either number in prose. The gate is **90%**
-(`fail_under = 90` in the project's own `pyproject.toml` and at the root
-pipeline; both gate the same number).
+The branch coverage floor is **90%**. Measure collection and coverage for this
+checkout using the pinned runner. Template's generated counts describe its
+bundled exemplars.
+[Standalone test command](quickstart.md#check-sources-and-generate-analysis) ·
+[Bundled counts](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/docs/_generated/COUNTS.md)
 
 Before modifying any file in `src/`, count the existing tests for the function
-you are changing. After modifying, run:
-
-```bash
-uv run pytest projects/templates/template_prose_project/tests/ \
-    --cov=projects/templates/template_prose_project/src \
-    --cov-fail-under=90 \
-    --cov-report=term-missing \
-    -v
-```
+you are changing. Run the standalone test command again after modifying it.
 
 Do not delete tests to make a coverage number work — fix the gap.
 
@@ -99,7 +91,7 @@ The pipeline analyses the manuscript using standard readability metrics.
 
 **GOOD** (concrete, linkable):
 ```markdown
-`projects/templates/template_prose_project/scripts/run_prose_pipeline.py` calls
+`scripts/run_prose_pipeline.py` calls
 `infrastructure.prose.analyze_manuscript` to compute Flesch-Kincaid Grade
 Level, Flesch Reading Ease, and Gunning Fog from the files under
 `docs/manuscript/`, then validates citations against `docs/manuscript/references.bib`
@@ -158,9 +150,10 @@ syntax rules to Python source.
 
 ## Rule 7: `output/` Is Disposable — Never Edit Generated Files
 
-The entire `projects/templates/template_prose_project/output/` tree is written by the
-pipeline and overwritten on every run. Editing a file in `output/` has zero
-lasting effect and will confuse future agents.
+The pipeline generates `output/` in the registered working checkout. Start from
+a fresh output directory and keep the standalone repository's published snapshot
+as evidence. Change the producer to update a generated file.
+[Pinned runner setup](quickstart.md#set-up-the-pinned-runner)
 
 If you need to change what a generated file contains, change the **generator**:
 - To change `output/manuscript_report.json` → modify `infrastructure.prose`
@@ -181,25 +174,23 @@ producer/consumer table.
 
 ## Verification Checklist
 
-Run all three commands before submitting any change to this project:
+Complete all three checks before submitting any change. Use the pinned runner
+root and the `$project` path from its working-checkout setup.
 
-```bash
-# 1. Tests pass and coverage gate is met
-uv run pytest projects/templates/template_prose_project/tests/ \
-    --cov=projects/templates/template_prose_project/src \
-    --cov-fail-under=90 -q
+1. Run the Quickstart's pytest command. Confirm that it collected tests and met
+   the 90% branch coverage floor. [Test command](quickstart.md#check-sources-and-generate-analysis)
+2. Scan the registered checkout's Python tests for mocks.
 
-# 2. No mocks exist anywhere in tests/
-grep -r "unittest.mock\|MagicMock\|@patch\|create_autospec" \
-    projects/templates/template_prose_project/tests/ || echo "Clean — no mocks found"
+   ```sh
+   grep -rEn --include='*.py' 'unittest\.mock|MagicMock|@patch|create_autospec' "$project/tests"
+   ```
 
-# 3. No infrastructure analysis calls outside the scripts seam
-grep -nE "analyze_manuscript|parse_bibfile|write_report" \
-    projects/templates/template_prose_project/src/figures.py \
-    projects/templates/template_prose_project/src/report.py \
-    projects/templates/template_prose_project/src/manuscript_variables.py \
-    projects/templates/template_prose_project/src/config.py \
-    || echo "Clean — only the scripts layer performs infrastructure operations"
-```
+3. Scan the registered checkout's domain code for infrastructure imports.
 
-All three must produce zero violations (or the "Clean" message for checks 2 and 3).
+   ```sh
+   grep -rEn --include='*.py' '^[[:space:]]*(from|import)[[:space:]]+infrastructure([[:space:].,]|$)' "$project/src"
+   ```
+
+Run each `grep` check separately. Exit status 1 means no matches. A match is a
+violation. A missing directory or other `grep` error must be resolved before
+submitting.

@@ -8,12 +8,12 @@
 
 ## Start a fork
 
-Create a fork of this standalone repository and register it under
-`projects/working/my_review_project` in the [pinned runner](quickstart.md).
-Replace the manuscript sections and bibliography in `docs/manuscript/`
-and update the metadata and policy in `docs/manuscript/config.yaml`. Run
-the tests and the prose review using the commands in the quickstart with
-your project name.
+Create a fork and set `PROSE_CHECKOUT` to the absolute path of its clean
+checkout. Follow the pinned runner setup. To register it at
+`projects/working/my_review_project`, set `project` to that path and use
+`working/my_review_project` in both stage commands. Replace the manuscript
+sections and bibliography in `docs/manuscript/` and update its `config.yaml`.
+[Pinned runner setup](quickstart.md#set-up-the-pinned-runner)
 
 ## What you're forking
 
@@ -45,7 +45,7 @@ AESTHETIC path is convention only. The full inventory lives in
 |---|---|---|
 | REQUIRED — pipeline gate | All `src/*.py`, all `tests/test_*.py`, `tests/conftest.py` (pins `MPLBACKEND=Agg`), `pyproject.toml`, `docs/manuscript/config.yaml`, `docs/manuscript/*.md`, `docs/manuscript/references.bib`, `docs/manuscript/preamble.md` | Keep them; the 90% coverage gate + LaTeX render depend on them |
 | REQUIRED — orchestration | `scripts/run_prose_pipeline.py`, `scripts/y_generate_prose_figures.py`, `scripts/z_generate_manuscript_variables.py` | Subprocess-tested in `tests/test_scripts.py`; the alphabetical prefix (none / `y_` / `z_`) is an ordering hint |
-| AESTHETIC | `docs/*.md`, `*/STYLE.md`, `*/PATTERNS.md`, `*/CONVENTIONS.md`, `*/AGENTS.md`, `*/README.md`, `scripts/00_preflight.py`, `docs/manuscript/config.yaml.example` | Drift detected only by `scripts/audit/check_template_drift.py` and audits |
+| AESTHETIC | `docs/*.md`, `*/STYLE.md`, `*/PATTERNS.md`, `*/CONVENTIONS.md`, `*/AGENTS.md`, `*/README.md`, `scripts/00_preflight.py`, `docs/manuscript/config.yaml.example` | Review changes to the standalone guides manually and check their links |
 
 ## Concrete first steps after fork
 
@@ -82,19 +82,21 @@ The loader rejects unknown YAML keys and enforces invariants
 4. Add a test in `tests/test_pipeline.py` covering both
    `passed=True` and `passed=False`.
 
-### 4. Run the drift checker before pushing
-```bash
-uv run python scripts/audit/check_template_drift.py
-```
-20 unit tests in
-[`tests/infra_tests/test_check_template_drift.py`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/tests/infra_tests/test_check_template_drift.py)
-prove each detector catches the bug class it was built for.
+### 4. Check the registered fork before pushing
+
+Use the standalone verification checklist from the pinned runner. Follow the
+Quickstart's analysis, render, and validation steps for manuscript changes.
+[Verification checklist](agent_instructions.md#verification-checklist) ·
+[Quickstart](quickstart.md#check-sources-and-generate-analysis)
+
+Template's drift checker audits the bundled exemplars in the Template repository.
+[Bundled drift checker](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/scripts/audit/check_template_drift.py)
 
 ## Common friction points (and fixes)
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Tests collect 0 / coverage 0% | Per-project `.venv` lacks `pytest` (`uv venv` without `uv sync`) | The runner now hard-fails; the canonical gate is the `uv run pytest …` command above |
+| Tests collect 0 / coverage 0% | Per-project `.venv` lacks `pytest` (`uv venv` without `uv sync`) | Use the [standalone test command](quickstart.md#check-sources-and-generate-analysis) from the pinned runner root |
 | `PDF Rendering` stage fails with `mmdc could not find Chrome` | `docs/manuscript/05_pipeline_internals.md` embeds `mermaid` blocks | One-time: `npx --yes puppeteer browsers install chrome-headless-shell`; `scripts/00_preflight.py` emits an actionable warning before the PDF stage |
 | Matplotlib backend error in CI | `MPLBACKEND` not set | `tests/conftest.py` pins `MPLBACKEND=Agg` at import time — keep it |
 | `Unknown prose key` ValueError | Typo in `docs/manuscript/config.yaml` (e.g., `target_grade_level_minimum`) | The strict loader rejects unknown keys; check spelling against `_KNOWN_PROSE_KEYS` in `src/config.py` |
@@ -115,4 +117,3 @@ than editorial, fork that one instead.
 - [`testing_philosophy.md`](testing_philosophy.md) — zero-mock standard
 - [`rendering_pipeline.md`](rendering_pipeline.md) — 4-phase pipeline
 - [`faq.md`](faq.md) — recurring questions
-- [`../../../scripts/audit/check_template_drift.py`](https://github.com/docxology/template/blob/87704feae0a4490ef7dad9c931d268e8c30273c2/scripts/audit/check_template_drift.py) — the drift checker
